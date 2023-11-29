@@ -10,12 +10,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Role {
-  id        Int      @id @default(autoincrement())
-  name      String
-  user      User[]
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+enum Role {
+  user
+  admin
 
   @@map("roles")
 }
@@ -25,16 +22,15 @@ model User {
   username           String
   email              String         @unique
   password           String
-  resetPasswordToken String         @map("reset_password_token")
-  verificationToken  String         @map("verification_token")
-  roleId             Int            @map("role_id")
-  profile            Profile[]
+  resetPasswordToken String  ?       @map("reset_password_token")
+  verificationToken  String  ?       @map("verification_token")
+  role             Role
+  profile            Profile ?
   notification       Notification[]
   review             Review[]
   transaction        Transaction[]
   createdAt          DateTime       @default(now()) @map("created_at")
   updatedAt          DateTime       @updatedAt @map("updated_at")
-  role               Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@map("users")
 }
@@ -47,7 +43,7 @@ model Profile {
   city           String
   province       String
   country        String
-  userId         Int
+  userId         Int @unique
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -76,13 +72,10 @@ model Category {
   @@map("categories")
 }
 
-model Level {
-  id        Int      @id @default(autoincrement())
-  name      String
-  course    Course[]
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
+enum Level {
+  beginner
+  intermediate
+  advanced
   @@map("levels")
 }
 
@@ -90,15 +83,14 @@ model Course {
   id                Int                 @id @default(autoincrement())
   name              String
   courseCode        String              @map("course_code")
-  isPremium         String              @map("is_premium")
+  isPremium         Boolean              @map("is_premium")
   categoryId        Int                 @map("category_id")
-  levelId           Int                 @map("level_id")
+  level Level
   price             Int
   description       String
   detailTransaction DetailTransaction[]
   review            Review[]
   category          Category            @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  level             Level               @relation(fields: [levelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt         DateTime            @default(now()) @map("created_at")
   updatedAt         DateTime            @updatedAt @map("updated_at")
 
