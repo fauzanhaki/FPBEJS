@@ -2,15 +2,17 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
+
+
 const { fakeUser,
-    fakeProfile,
-    fakeCategory,
-    fakeCourse,
-    fakeDetailTransaction,
-    fakePaymentMethod,
-    fakeNotification,
-    fakeReview,
-    fakeTransaction } = require('./fake-data');
+  fakeProfile,
+  fakeCategory,
+  fakeCourse,
+  fakeDetailTransaction,
+  fakePaymentMethod,
+  fakeNotification,
+  fakeReview,
+  getUniqueNumber } = require('./fake-data');
 
 
 async function seed() {
@@ -22,16 +24,23 @@ async function seed() {
   }
 
   // Seeder untuk Profile
+  const user = await prisma.user.findMany();
   for (let i = 0; i < 10; i++) {
     await prisma.profile.create({
-      data: fakeProfile(),
+      data: {
+        ...fakeProfile(),
+        userId: user[i].id,
+      }
     });
   }
- 
+
   // Seeder untuk Notification
   for (let i = 0; i < 10; i++) {
     await prisma.notification.create({
-      data: fakeNotification(),
+      data: {
+        ...fakeNotification(),
+        userId: getUniqueNumber(user),
+      },
     });
   }
 
@@ -41,40 +50,58 @@ async function seed() {
       data: fakeCategory(),
     });
   }
+  const category = await prisma.category.findMany();
 
   // Seeder untuk Course
   for (let i = 0; i < 10; i++) {
     await prisma.course.create({
-      data: fakeCourse(),
+      data: {
+        ...fakeCourse(),
+        categoryId: getUniqueNumber(category),
+      },
     });
   }
 
   // Seeder untuk PaymentMethod
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 5; i++) {
     await prisma.paymentMethod.create({
       data: fakePaymentMethod(),
     });
   }
 
   // Seeder untuk Transaction
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     await prisma.transaction.create({
-      data: fakeTransaction(),
+      data: {
+        userId: getUniqueNumber(user)
+      },
     });
   }
 
 
   // Seeder untuk DetailTransaction
+  const paymentMethod = await prisma.paymentMethod.findMany()
+  const course = await prisma.paymentMethod.findMany()
+  const transaction = await prisma.transaction.findMany()
   for (let i = 0; i < 10; i++) {
     await prisma.detailTransaction.create({
-      data: fakeDetailTransaction(),
+      data: {
+        courseId: getUniqueNumber(course),
+        transactionId: getUniqueNumber(transaction),
+        paymentMethodId: getUniqueNumber(paymentMethod),
+        ...fakeDetailTransaction()
+      },
     });
   }
 
   // Seeder untuk Review
   for (let i = 0; i < 10; i++) {
     await prisma.review.create({
-      data: fakeReview(),
+      data: {
+        ...fakeReview(),
+        userId: getUniqueNumber(user),
+        courseId: getUniqueNumber(course)
+      },
     });
   }
 
