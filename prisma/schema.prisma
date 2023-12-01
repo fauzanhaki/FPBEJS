@@ -86,9 +86,9 @@ model Course {
   courseCode        String              @map("course_code")
   isPremium         Boolean             @map("is_premium")
   categoryId        Int                 @map("category_id")
-  level Level
+  level             Level
   price             Int
-  description       String
+  description       String?
   videoUrl          String              @map("video_url")
   detailTransaction DetailTransaction[]
   review            Review[]
