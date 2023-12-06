@@ -30,7 +30,7 @@ model User {
   profile           Profile?
   notification      Notification[]
   review            Review[]
-  transaction       Transaction[]
+  Transaction       Transaction[]
   createdAt         DateTime       @default(now()) @map("created_at")
   updatedAt         DateTime       @updatedAt @map("updated_at")
 
@@ -93,45 +93,46 @@ model Ranting {
 }
 
 model Transaction {
-  id                Int                 @id @default(autoincrement())
-  userId            Int                 @unique @map("user_id")
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  detailTransaction DetailTransaction[]
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
-
-  @@map("transactions")
-}
-
-model DetailTransaction {
-  id            Int           @id @default(autoincrement())
-  courseId      Int           @unique @map("course_id")
-  transactionId Int           @unique @map("transaction_id")
-  paymentMethod PaymentMethod @default(PREMIUM)
-  paymentStatus Boolean
-  course        Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  transaction   Transaction   @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  id              Int           @id @default(autoincrement())
+  courseId        Int           @map("course_id")
+  userId          Int           @map("user_id")
+  paymentMethodId Int           @map("payment_method_id")
+  paymentStatus   Boolean?
+  totalHarga      Float?        @map("total_harga")
+  course          Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
 
   @@map("details_transactions")
 }
 
-model Course {
-  id                Int                 @id @default(autoincrement())
+model PaymentMethod {
+  id                Int           @id @default(autoincrement())
   name              String
-  courseCode        String              @map("course_code")
-  isPremium         Boolean             @map("is_premium")
-  categoryId        Int                 @map("category_id")
-  levelId           Int                 @map("level_id")
+  detailTransaction Transaction[]
+  createdAt         DateTime      @default(now()) @map("crated_at")
+  updatedAt         DateTime      @updatedAt
+
+  @@map("payment_method")
+}
+
+model Course {
+  id                Int           @id @default(autoincrement())
+  name              String
+  courseCode        String        @map("course_code")
+  isPremium         Boolean       @map("is_premium")
+  categoryId        Int           @map("category_id")
+  levelId           Int           @map("level_id")
   harga             String
   description       String?
-  category          Category            @relation("course_categories", fields: [categoryId], references: [id], onDelete: Cascade)
-  level             Level               @relation("course_levels", fields: [levelId], references: [id], onDelete: Cascade)
+  category          Category      @relation("course_categories", fields: [categoryId], references: [id], onDelete: Cascade)
+  level             Level         @relation("course_levels", fields: [levelId], references: [id], onDelete: Cascade)
   review            Review[]
-  detailTransaction DetailTransaction[]
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
+  detailTransaction Transaction[]
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
 
   @@map("courses")
 }
@@ -150,9 +151,4 @@ model Level {
   course Course[] @relation("course_levels")
 
   @@map("levels")
-}
-
-enum PaymentMethod {
-  PREMIUM
-  FREE
 }

@@ -11,4 +11,6 @@ module.exports = {
   Level: prisma.Level,
   Review: prisma.Review,
   Ranting: prisma.Ranting,
+  PaymentMethod: prisma.PaymentMethod,
+  Transaction: prisma.Transaction,
 };

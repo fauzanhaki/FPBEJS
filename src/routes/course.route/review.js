@@ -6,5 +6,6 @@ const express = require("express"),
 router.post("/review", controllers.createReview);
 router.get("/allReview", controllers.getAllReview);
 router.get("/reviews/:id", controllers.getById);
+router.delete("/delete-review/:id", controllers.destroy);
 
 module.exports = router;

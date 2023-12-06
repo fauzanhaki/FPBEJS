@@ -173,4 +173,34 @@ module.exports = {
       return res.status(500).json(utils.apiError("Internal Server Error"));
     }
   },
+
+  destroy: async (req, res) => {
+    try {
+      const existingReviews = await Review.findUnique({
+        where: {
+          id: parseInt(req.params.id),
+        },
+      });
+
+      if (!existingReviews) {
+        return res
+          .status(404)
+          .json({ error: true, message: "Review not found" });
+      }
+
+      await Review.delete({
+        where: {
+          id: parseInt(req.params.id),
+        },
+      });
+      return res.status(200).json({
+        error: false,
+        message: "Review delete successfully",
+        data: existingReviews,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json(utils.apiError("Internal Server Error"));
+    }
+  },
 };
