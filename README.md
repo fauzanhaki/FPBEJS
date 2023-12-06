@@ -1,6 +1,5 @@
 =============== REVIEW ===============
 
-example review
 POST = http://localhost:5000/review
 {
   "nilai": 1-5,
@@ -21,8 +20,6 @@ untuk struktur folder nanti aku samain
 
 
 =============== TRANSACTION ===============
-
-example transaction
 
 Untuk transaction belum fiks (TOLONG DI CEK), AKU SESUAIKAN DENGAN DATABASE.
 
