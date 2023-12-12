@@ -37,7 +37,8 @@ const encryptToken = async (password) => {
 };
 
 const createToken = (payload) => {
-    return jwt.sign(payload, secret_key);
+    const expiration = Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 6); // 6 hari
+    return jwt.sign({ ...payload, exp: expiration }, secret_key);
 }
 
 

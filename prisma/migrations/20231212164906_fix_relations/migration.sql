@@ -7,6 +7,15 @@
 
 */
 -- DropForeignKey
+ALTER TABLE "courses" DROP CONSTRAINT "courses_category_id_fkey";
+
+-- DropForeignKey
+ALTER TABLE "detail_transactions" DROP CONSTRAINT "detail_transactions_course_id_fkey";
+
+-- DropForeignKey
+ALTER TABLE "detail_transactions" DROP CONSTRAINT "detail_transactions_payment_method_id_fkey";
+
+-- DropForeignKey
 ALTER TABLE "profiles" DROP CONSTRAINT "profiles_userId_fkey";
 
 -- DropIndex
@@ -21,6 +30,3 @@ CREATE UNIQUE INDEX "profiles_user_id_key" ON "profiles"("user_id");
 
 -- AddForeignKey
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "courses" ADD CONSTRAINT "courses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
