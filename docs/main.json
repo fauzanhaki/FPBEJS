@@ -171,7 +171,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "newPassword": {"type": "string"}
+                        "message": {"type": "string"}
                       }
                     }
                   }
@@ -212,7 +212,9 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "name": {"type": "string"}
+                        "name": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -238,7 +240,9 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "name": {"type": "string"}
+                        "name": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -288,7 +292,9 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "name": {"type": "string"}
+                        "name": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -324,7 +330,9 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "name": {"type": "string"}
+                        "name": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -357,12 +365,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "name": {"type": "string"}
-                      }
-                    }
+                    "name": { "type": "string" },
+                    "createdAt": {"type":"string"},
+                    "updatedAt": {"type": "string"}
                   }
                 }
               }
@@ -391,7 +396,8 @@
                   "level": {"type": "string"},
                   "price": {"type": "integer"},
                   "description": {"type": "string"},
-                  "videoUrl": {"type": "string"}
+                  "videoUrl": {"type": "string"},
+                  "userId": {"type":"string"}
                 }
               }
             }
@@ -414,7 +420,10 @@
                         "level": {"type": "string"},
                         "price": {"type": "integer"},
                         "description": {"type": "string"},
-                        "videoUrl": {"type": "string"}
+                        "videoUrl": {"type": "string"},
+                        "mentor": {"type":"string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -447,7 +456,10 @@
                         "level": {"type": "string"},
                         "price": {"type": "integer"},
                         "description": {"type": "string"},
-                        "videoUrl": {"type": "string"}
+                        "videoUrl": {"type": "string"},
+                        "mentor": {"type":"string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -492,7 +504,10 @@
                         "level": {"type": "string"},
                         "price": {"type": "integer"},
                         "description": {"type": "string"},
-                        "videoUrl": {"type": "string"}
+                        "videoUrl": {"type": "string"},
+                        "mentor": {"type":"string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -531,7 +546,8 @@
                   "level": {"type": "string"},
                   "price": {"type": "integer"},
                   "description": {"type": "string"},
-                  "videoUrl": {"type": "string"}
+                  "videoUrl": {"type": "string"},
+                  "userId": {"type":"string"}
                 }
               }
             }
@@ -554,7 +570,10 @@
                         "level": {"type": "string"},
                         "price": {"type": "integer"},
                         "description": {"type": "string"},
-                        "videoUrl": {"type": "string"}
+                        "videoUrl": {"type": "string"},
+                        "mentor": {"type":"string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }

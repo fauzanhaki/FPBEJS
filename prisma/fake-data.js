@@ -1,6 +1,6 @@
 const { Role, Level } = require('@prisma/client'),
   { faker } = require('@faker-js/faker/locale/id_ID'),
-  bcrypt = require('bcrypt')
+  bcrypt = require('bcrypt');
 
 
 function getUniqueNumber(number) {
@@ -16,7 +16,7 @@ function fakeUser() {
     password: bcrypt.hashSync("12345678", bcrypt.genSaltSync(5)),
     resetPasswordToken: undefined,
     verificationToken: undefined,
-    role: faker.helpers.arrayElement([Role.user, Role.admin]),
+    role: faker.helpers.arrayElement([Role.user, Role.admin, Role.mentor]),
   };
 }
 
@@ -38,11 +38,28 @@ function fakeNotification() {
   };
 }
 
+const categories = ["UI/UX", "Front-End", "Back-End"];
+let usedCategories = [];
 function fakeCategory() {
+  let name = '';
+
+  const unusedCategories = categories.filter(category => !usedCategories.includes(category));
+
+  if (unusedCategories.length > 0) {
+    const randomIndex = Math.floor(Math.random() * unusedCategories.length);
+    name = unusedCategories[randomIndex];
+    usedCategories.push(name);
+  } else {
+    usedCategories = [];
+    name = categories[Math.floor(Math.random() * categories.length)];
+    usedCategories.push(name);
+  }
+
   return {
-    name: faker.helpers.arrayElement(["UI/UX", "Front-End", "Back-End"]),
+    name: name,
   };
 }
+
 
 function fakeCourse() {
   return {
@@ -52,14 +69,29 @@ function fakeCourse() {
     level: faker.helpers.arrayElement([Level.beginner, Level.intermediate, Level.advanced]),
     price: faker.number.int({ min: 99000, max: 1000000 }),
     description: faker.lorem.words(5),
-    videoUrl: faker.lorem.words(5)
+    videoUrl: faker.lorem.words(5),
   };
 }
 
-
+const paymentMethod = ["Dana", "OVO", "Gopay", "Saku", "Link Aja"];
+let usedPaymentMethod = [];
 function fakePaymentMethod() {
+  let name = '';
+
+  const unusedPaymentMethod = paymentMethod.filter(method => !usedPaymentMethod.includes(method));
+
+  if (unusedPaymentMethod.length > 0) {
+    const randomIndex = Math.floor(Math.random() * unusedPaymentMethod.length);
+    name = unusedPaymentMethod[randomIndex];
+    usedPaymentMethod.push(name);
+  } else {
+    usedPaymentMethod = [];
+    name = categories[Math.floor(Math.random() * categories.length)];
+    usedPaymentMethod.push(name);
+  }
+
   return {
-    name: faker.helpers.arrayElement(["Dana", "Gopay", "Saku", "Dompet", "Cash"]),
+    name: name,
   };
 }
 

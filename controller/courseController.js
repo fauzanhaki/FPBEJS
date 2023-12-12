@@ -1,4 +1,8 @@
+
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 const { course, users } = require('../models');
+const { empty } = require('@prisma/client/runtime/library');
 
 /*
 name
@@ -12,57 +16,97 @@ videoUrl
 */
 
 module.exports = {
-    createCourse: async (req, res) => {
+    createCourse: async (req, res, next) => {
         try {
-
-            const userId = res.user.id;
-            const user = await users.findUnique({
+            const userId = req.body.userId;
+            const existUser = await users.findFirst({
                 where: { id: Number(userId) }
+            })
+
+            if (existUser.role != "mentor") {
+                return res.status(403).json({ message: "Mentor not found" })
+            }
+
+            const existCourse = await course.findFirst({
+                where: {
+                    name: req.body.name.toLowerCase()
+                }
+            })
+
+            if (existCourse) return res.status(500).json({ message: "Course already exist" });
+
+            const data = await course.create({
+                data: {
+                    name: req.body.name,
+                    courseCode: req.body.courseCode,
+                    isPremium: Boolean(req.body.isPremium),
+                    categoryId: Number(req.body.categoryId),
+                    level: req.body.level,
+                    price: Number(req.body.price),
+                    description: req.body.description,
+                    videoUrl: req.body.videoUrl,
+                    userId: Number(userId)
+                }
             });
 
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
-            }
+            return res.status(201).json({ message: "New Course has been created", data })
 
-            const isAdmin = user.role == 'admin';
-            if (isAdmin) {
-                const existCourse = await course.findFirst({
-                    where: {
-                        name: req.body.name.toLowerCase()
-                    }
-                })
-
-                if (existCourse) return res.status(500).json({ message: "Course already exist" });
-
-                const data = await course.create({
-                    data: {
-                        name: req.body.name,
-                        courseCode: req.body.courseCode,
-                        isPremium: Boolean(req.body.isPremium),
-                        categoryId: Number(req.body.categoryId),
-                        level: req.body.level,
-                        price: Number(req.body.price),
-                        description: req.body.description,
-                        videoUrl: req.body.videoUrl
-                    }
-                });
-                return res.status(201).json({ message: "New Course has been created", data })
-            } else {
-                return res.status(404).json({ message: "Sorry you're not admin" });
-            }
         } catch (error) {
-            console.log(error);
-            return res.status(500).json({ message: "Internal Server Error!" })
+          console.log(error);
+            next(error)
         }
     },
 
     getAllCourse: async (req, res, next) => {
         try {
-            const data = await course.findMany();
+            const course = await prisma.course.findMany({
+                select: {
+                  id: true,
+                  name: true,
+                  courseCode: true,
+                  isPremium: true,
+                  category: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                  level: true,
+                  price: true,
+                  description: true,
+                  videoUrl: true,
+                  User: {
+                    select: {
+                      profile: {
+                        select: {
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                  createdAt: true,
+                  updatedAt: true
+                },
+              });
+              
+              if (!course) return res.status(403).json({ message: 'Course empty' })
 
-            if (!data) return res.status(403).json({ message: 'Course empty' })
+              const data = course.map(course => ({
+                id: course.id,
+                name: course.name,
+                courseCode: course.courseCode,
+                isPremium: course.isPremium,
+                category: course.category.name,
+                level: course.level,
+                price: course.price,
+                description: course.description,
+                videoUrl: course.videoUrl,
+                mentor: course.User.profile.name,
+                createdAt: course.createdAt,
+                updatedAt: course.updatedAt
+              }));              
 
             return res.status(200).json({ data })
+
         } catch (error) {
             next(error)
         }
@@ -71,10 +115,52 @@ module.exports = {
     getCourseById: async (req, res, next) => {
         try {
             const courseId = req.params.id;
-            const data = await course.findUnique({
-                where: { id: Number(courseId) }
-            })
-            if (!data) return res.status(403).json({ message: 'Not found' })
+            const course = await prisma.course.findUnique({
+                where: {id: Number(courseId)},
+                select: {
+                  id: true,
+                  name: true,
+                  courseCode: true,
+                  isPremium: true,
+                  category: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                  level: true,
+                  price: true,
+                  description: true,
+                  videoUrl: true,
+                  User: {
+                    select: {
+                      profile: {
+                        select: {
+                          name: true,
+                        },
+                      },
+                    },
+                  },
+                  createdAt: true,
+                  updatedAt: true
+                },
+              });
+              
+              if (!course) return res.status(403).json({ message: 'Not found' })
+
+              const data = {
+                id: course.id,
+                name: course.name,
+                courseCode: course.courseCode,
+                isPremium: course.isPremium,
+                category: course.category.name,
+                level: course.level,
+                price: course.price,
+                description: course.description,
+                videoUrl: course.videoUrl,
+                mentor: course.User.profile.name,
+                createdAt: course.createdAt,
+                updatedAt: course.updatedAt
+            };
 
             return res.status(200).json({ data })
         } catch (error) {
@@ -84,73 +170,57 @@ module.exports = {
 
     updateCourseById: async (req, res, next) => {
         try {
-            const userId = res.user.id;
+
             const courseId = req.params.id;
+            const userId = req.body.userId;
             const user = await users.findUnique({
                 where: { id: Number(userId) }
             })
+            if(!user) return res.status(403).json({message: "User not found"})
 
-            if (!user) return res.status(403).json({ message: 'Not Found' })
+            let data = await course.findUnique({
+                where: { id: Number(courseId) }
+            })
 
-            const isAdmin = user.role == 'admin'
+            if (!data) return res.status(403).json({ message: 'Not Found' })
 
-            if (isAdmin) {
-                let data = await course.findUnique({
-                    where: { id: Number(courseId) }
-                })
-
-                if (!data) return res.status(403).json({ message: 'Not Found' })
-
-                data = await course.update({
-                    where: { id: Number(courseId) },
-                    data: {
-                        name: req.body.name,
-                        courseCode: req.body.courseCode,
-                        isPremium: Boolean(req.body.isPremium),
-                        categoryId: Number(req.body.categoryId),
-                        level: req.body.level,
-                        price: Number(req.body.price),
-                        description: req.body.description,
-                        videoUrl: req.body.videoUrl
-                    }
-                })
-                return res.status(200).json({ message: 'Update success', data })
-            } else {
-                return res.status(404).json({ message: "Sorry you're not admin" });
-            }
+            data = await course.update({
+                where: { id: Number(courseId) },
+                data: {
+                    name: req.body.name,
+                    courseCode: req.body.courseCode,
+                    isPremium: Boolean(req.body.isPremium),
+                    categoryId: Number(req.body.categoryId),
+                    level: req.body.level,
+                    price: Number(req.body.price),
+                    description: req.body.description,
+                    videoUrl: req.body.videoUrl,
+                    userId: req.body.userId
+                }
+            })
+            return res.status(200).json({ message: 'Update success', data })
         } catch (error) {
             next(error)
         }
-
     },
 
     deleteCourseById: async (req, res, next) => {
         try {
-            const userId = res.user.id;
+
             const courseId = req.params.id;
-            const user = await users.findUnique({
-                where: { id: Number(userId) }
+
+            let data = await course.findUnique({
+                where: { id: Number(courseId) }
             })
 
-            if (!user) return res.status(403).json({ message: 'Not Found' })
+            if (!data) return res.status(403).json({ message: 'Not Found' })
 
-            const isAdmin = user.role == 'admin'
+            data = await course.delete({
+                where: { id: Number(courseId) }
+            })
 
-            if (isAdmin) {
-                let data = await course.findUnique({
-                    where: { id: Number(courseId) }
-                })
+            return res.status(200).json({ message: 'Delete success', data })
 
-                if (!data) return res.status(403).json({ message: 'Not Found' })
-
-                data = await course.delete({
-                    where: { id: Number(courseId) }
-                })
-
-                return res.status(200).json({ message: 'Delete success', data })
-            } else {
-                return res.status(404).json({ message: "Sorry you're not admin" });
-            }
         } catch (error) {
             next(error)
         }
