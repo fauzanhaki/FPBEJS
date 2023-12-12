@@ -58,6 +58,7 @@ async function seed() {
       data: {
         ...fakeCourse(),
         categoryId: getUniqueNumber(category),
+        userId: getUniqueNumber(user)
       },
     });
   }

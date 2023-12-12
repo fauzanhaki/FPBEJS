@@ -13,6 +13,7 @@ datasource db {
 enum Role {
   user
   admin
+  mentor
 
   @@map("roles")
 }
@@ -29,6 +30,7 @@ model User {
   notification       Notification[]
   review             Review[]
   transaction        Transaction[]
+  course             Course[]
   createdAt          DateTime       @default(now()) @map("created_at")
   updatedAt          DateTime       @updatedAt @map("updated_at")
 
@@ -43,7 +45,7 @@ model Profile {
   city           String
   province       String
   country        String
-  userId         Int      @unique
+  userId         Int      @unique @map("user_id")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -90,11 +92,13 @@ model Course {
   price             Int
   description       String?
   videoUrl          String              @map("video_url")
+  userId            Int                 @map("user_id")
   detailTransaction DetailTransaction[]
   review            Review[]
   category          Category            @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt         DateTime            @default(now()) @map("created_at")
   updatedAt         DateTime            @updatedAt @map("updated_at")
+  User              User                @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   @@map("courses")
 }
