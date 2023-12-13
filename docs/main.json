@@ -31,6 +31,10 @@
       "description": "Find all about course router here"
     },
     {
+      "name": "Payment",
+      "description": "Find all about payment method router here"
+    },
+    {
       "name": "Transaction",
       "description": "Find all about transaction router here"
     }
@@ -116,7 +120,7 @@
     "/auth/forgot-password": {
       "post": {
         "tags": ["Auth"],
-        "operationId": "forgotPassword",
+        "operationId": "forgot password",
         "summary": "forgotPassword user",
         "requestBody": {
           "content": {
@@ -204,6 +208,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "id": {"type": "string"},
                     "username": {"type": "string"},
                     "email": {"type": "string"},
                     "role": {"type": "string"}
@@ -242,6 +247,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "username": {"type": "string"},
                         "email": {"type": "string"},
                         "role": {"type": "string"},
@@ -336,6 +342,7 @@
                         "data": {
                           "type": "object",
                           "properties": {
+                            "id": {"type": "number"},
                             "username": {"type": "string"},
                             "email": {"type": "string"},
                             "role": {"type": "string"}
@@ -378,6 +385,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "createdAt": {"type":"string"},
                         "updatedAt": {"type": "string"}
@@ -406,6 +414,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "createdAt": {"type":"string"},
                         "updatedAt": {"type": "string"}
@@ -446,6 +455,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "createdAt": {"type":"string"},
                         "updatedAt": {"type": "string"}
@@ -495,9 +505,12 @@
                   "properties": {                    
                       "message": {"type": "string"},
                       "data": {
-                          "type": "object",
-                          "properties": {
-                            "name": {"type": "string"}
+                        "type": "object",
+                        "properties": {
+                          "id": {"type": "number"},
+                          "name": {"type": "string"},
+                          "createdAt": {"type": "string"},
+                          "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -534,6 +547,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "createdAt": {"type":"string"},
                         "updatedAt": {"type": "string"}
@@ -584,6 +598,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -620,6 +635,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -668,6 +684,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -704,6 +721,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -740,6 +758,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -809,6 +828,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -856,6 +876,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -878,7 +899,171 @@
       }
     },
 
-
+    "/payment-method": {
+      "post": {
+        "tags": ["Payment"],
+        "operationId": "Create payment method",
+        "summary": "Create payment method",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                  "properties": {
+                    "name": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get-payment-method": {
+      "get": {
+        "tags": ["Payment"],
+        "operationId": "Get all payment method",
+        "summary": "Get all payment method",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/update-payment-method/{id}": {
+      "put": {
+        "tags": ["Payment"],
+        "operationId": "Get payment method by id",
+        "summary": "Get payment method by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                  "properties": {
+                    "name": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/delete-payment-method/{id}": {
+      "delete": {
+        "tags": ["Payment"],
+        "operationId": "delete payment method by id",
+        "summary": "delete payment method by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
 
     "/transaction/create": {
       "post": {
@@ -891,7 +1076,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {"type": "string"}
+                  "id": {"type": "number"}
                   
                 }
               }
@@ -1017,3 +1202,4 @@
     }
   }
 }
+
