@@ -16,7 +16,7 @@ module.exports = {
                 data: {
                     email: req.body.email,
                     username: req.body.username,
-                    role: req.body.role
+                    role: req.body.role.toLowerCase().trim()
                 }
             })
 
@@ -33,6 +33,7 @@ module.exports = {
                 select: {
                     id: true,
                     email: true,
+                    username: true,
                     role: true,
                     createdAt: true,
                     updatedAt: true
@@ -50,12 +51,30 @@ module.exports = {
     getUserById: async (req, res, next) => {
         try {
             const userId = req.params.id;
+
             const data = await users.findUnique({
                 where: { id: Number(userId) },
                 select: {
-                    profile: true
+                    id: true,
+                    username: true,
+                    email: true,
+                    role: true,
+                    profile: {
+                        select: {
+                            name: true,
+                            no_telp: true,
+                            profilePicture: true,
+                            city: true,
+                            province: true,
+                            country: true,
+                            userId: true,
+                            createdAt: true,
+                            updatedAt: true
+                        }
+                    }
                 }
-            })
+            });
+
 
             if (!data) return res.status(404).json({ message: "User not found" })
 

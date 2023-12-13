@@ -3,6 +3,12 @@ const { category } = require('../models');
 module.exports = {
     create: async (req, res, next) => {
         try {
+            const existCategory = await category.findMany();
+            
+            existCategory.map(category => {
+                if(category.name.toLowerCase() == req.body.name.toLowerCase()) return res.status(409).json({message: "Category already defined"})
+            });
+
             const data = await category.create({
                 data: {
                     name: req.body.name
@@ -19,6 +25,7 @@ module.exports = {
             next(error)
         }
     },
+    
     get: async (req, res, next) => {
         try {
             const data = await category.findMany()
@@ -32,6 +39,7 @@ module.exports = {
         }
 
     },
+
     getById: async (req, res, next) => {
         try {
 
@@ -49,6 +57,7 @@ module.exports = {
             next(error)
         }
     },
+
     update: async (req, res, next) => {
         try {
             const existCategory = await category.findUnique({

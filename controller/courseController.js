@@ -1,6 +1,7 @@
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const {course} = require('../utils')
 
 /*
 name
@@ -17,7 +18,7 @@ module.exports = {
   createCourse: async (req, res, next) => {
     try {
       const userId = req.body.userId;
-      const existUser = await users.findFirst({
+      const existUser = await prisma.user.findFirst({
         where: { id: Number(userId) }
       })
 
@@ -25,7 +26,7 @@ module.exports = {
         return res.status(403).json({ message: "Mentor not found" })
       }
 
-      const existCourse = await course.findFirst({
+      const existCourse = await prisma.course.findFirst({
         where: {
           name: req.body.name.toLowerCase()
         }
@@ -33,13 +34,13 @@ module.exports = {
 
       if (existCourse) return res.status(500).json({ message: "Course already exist" });
 
-      const data = await course.create({
+      const data = await prisma.course.create({
         data: {
           name: req.body.name,
           courseCode: req.body.courseCode,
           isPremium: Boolean(req.body.isPremium),
           categoryId: Number(req.body.categoryId),
-          level: req.body.level,
+          level: req.body.level.toLowerCase().trim(),
           price: Number(req.body.price),
           description: req.body.description,
           videoUrl: req.body.videoUrl,
@@ -50,7 +51,6 @@ module.exports = {
       return res.status(201).json({ message: "New Course has been created", data })
 
     } catch (error) {
-      console.log(error);
       next(error)
     }
   },
@@ -123,8 +123,8 @@ module.exports = {
   },
 
   getCourseById: async (req, res, next) => {
-    const courseId = req.params.id;
     try {
+      const courseId = req.params.id;
       const course = await prisma.course.findUnique({
         where: { id: Number(courseId) },
         select: {
@@ -190,38 +190,84 @@ module.exports = {
     }
   },
 
+  searchCourse: async (req, res, next) => {
+    try {
+      const { name } = req.query; 
+  
+      const data = await prisma.course.findMany({
+        where: {
+          name: {
+            contains: name, 
+            mode: 'insensitive' 
+          }
+        }
+      });
+
+      if(!data || data.length == 0) return res.status(404).json({message: "Course not found"})
+  
+      return res.status(200).json({ data });
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  paginationCourse: async (req, res, next) => {
+    try {
+      const { page=1, limit=10 } = req.query; 
+  
+      const pageNumber = parseInt(page); 
+      const itemsLimit = parseInt(limit); 
+  
+      const skip = (pageNumber - 1) * itemsLimit; 
+      
+      const data = await prisma.course.findMany({
+        skip: skip, 
+        take: itemsLimit, 
+        orderBy: { id: 'asc' } 
+      });
+
+      if(!data) return res.status(404).json({message: "Course not found"});
+  
+      return res.status(200).json({ data });
+    } catch (error) {
+      console.log(error);
+      next(error)
+    }
+  },
+
   updateCourseById: async (req, res, next) => {
     try {
 
       const courseId = req.params.id;
       const userId = req.body.userId;
-      const user = await users.findUnique({
+      const user = await prisma.user.findUnique({
         where: { id: Number(userId) }
       })
       if (!user) return res.status(404).json({ message: "User mot found" })
 
-      let data = await course.findUnique({
+      let data = await prisma.course.findUnique({
         where: { id: Number(courseId) }
       })
 
       if (!data) return res.status(404).json({ message: 'Course not found' })
 
-      data = await course.update({
+      data = await prisma.course.update({
         where: { id: Number(courseId) },
         data: {
           name: req.body.name,
           courseCode: req.body.courseCode,
           isPremium: Boolean(req.body.isPremium),
           categoryId: Number(req.body.categoryId),
-          level: req.body.level,
+          level: req.body.level.toLowerCase().trim(),
           price: Number(req.body.price),
           description: req.body.description,
           videoUrl: req.body.videoUrl,
-          userId: req.body.userId
+          userId: Number(req.body.userId)
         }
       })
       return res.status(200).json({ message: 'Update success', data })
     } catch (error) {
+      console.log(error);
       next(error)
     }
   },
@@ -230,14 +276,15 @@ module.exports = {
     try {
 
       const courseId = req.params.id;
+      console.log(courseId);
 
-      let data = await course.findUnique({
+      let data = await prisma.course.findFirst({
         where: { id: Number(courseId) }
       })
 
       if (!data) return res.status(403).json({ message: 'Course not Found' })
 
-      data = await course.delete({
+      data = await prisma.course.delete({
         where: { id: Number(courseId) }
       })
 
