@@ -1,6 +1,6 @@
 const express = require("express"),
-  router = express.Router(),
-  controllers = require("../../controllers/transaction.controllers/transaction");
+    router = express.Router(),
+    controllers = require("../../controllers/transaction.controllers/transaction.controllers");
 
 router.post("/transaction", controllers.create);
 router.get("/all-transaction", controllers.getAll);

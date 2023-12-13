@@ -6,6 +6,5 @@ module.exports = {
     body("feedback").notEmpty(),
     body("userId").notEmpty(),
     body("courseId").notEmpty(),
-    body("rantingId").notEmpty(),
   ],
 };

@@ -1,0 +1,600 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Simple Documentation API",
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "fpbejs-production.up.railway.app/api/v1/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Find all about auth router here"
+    },
+    {
+      "name": "Category",
+      "description": "Find all about category router here"
+    },
+    {
+      "name": "Course",
+      "description": "Find all about course router here"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "operationId": "registerUser",
+        "summary": "Register a new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {"type": "string"},
+                  "email": {"type": "string"},
+                  "password": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "email": {"type": "string"},
+                        "password": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "operationId": "loginUser",
+        "summary": "login user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {"type": "string"},
+                  "password": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": ["Auth"],
+        "operationId": "forgotPassword",
+        "summary": "forgotPassword user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "resetPasswordToken": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "tags": ["Auth"],
+        "operationId": "resetPassword",
+        "summary": "reset password user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newPassword": {"type": "string"},
+                  "confirmPassword": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "newPassword": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+
+
+    "/category/create": {
+      "post": {
+        "tags": ["Category"],
+        "operationId": "create category",
+        "summary": "create new category for course",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/": {
+      "get": {
+        "tags": ["Category"],
+        "operationId": "Get all category",
+        "summary": "Get all category",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/category/{id}": {
+      "put": {
+        "tags": ["Category"],
+        "operationId": "update category",
+        "summary": "update category",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of category to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Category"],
+        "summary": "Get category by id",
+        "operationId": "Get category by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of category to return",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Category"],
+        "summary": "Delete category by id",
+        "operationId": "Delete category by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of category to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+
+    "/course/create": {
+      "post": {
+        "tags": ["Course"],
+        "operationId": "create course",
+        "summary": "create new course",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"},
+                  "courseCode": {"type": "string"},
+                  "isPremium": {"type": "boolean"},
+                  "categoryId": {"type": "string"},
+                  "level": {"type": "string"},
+                  "price": {"type": "integer"},
+                  "description": {"type": "string"},
+                  "videoUrl": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"},
+                        "courseCode": {"type": "string"},
+                        "isPremium": {"type": "boolean"},
+                        "categoryId": {"type": "string"},
+                        "level": {"type": "string"},
+                        "price": {"type": "integer"},
+                        "description": {"type": "string"},
+                        "videoUrl": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/course/": {
+      "get": {
+        "tags": ["Course"],
+        "operationId": "get course",
+        "summary": "get all course",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"},
+                        "courseCode": {"type": "string"},
+                        "isPremium": {"type": "boolean"},
+                        "categoryId": {"type": "string"},
+                        "level": {"type": "string"},
+                        "price": {"type": "integer"},
+                        "description": {"type": "string"},
+                        "videoUrl": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/course/{id}": {
+      "get": {
+        "tags": ["Course"],
+        "summary": "Get course by id",
+        "operationId": "Get course by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of course to return",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"},
+                        "courseCode": {"type": "string"},
+                        "isPremium": {"type": "boolean"},
+                        "categoryId": {"type": "string"},
+                        "level": {"type": "string"},
+                        "price": {"type": "integer"},
+                        "description": {"type": "string"},
+                        "videoUrl": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Course"],
+        "operationId": "update course",
+        "summary": "update course",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of category to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {"type": "string"},
+                  "courseCode": {"type": "string"},
+                  "isPremium": {"type": "boolean"},
+                  "categoryId": {"type": "string"},
+                  "level": {"type": "string"},
+                  "price": {"type": "integer"},
+                  "description": {"type": "string"},
+                  "videoUrl": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"},
+                        "courseCode": {"type": "string"},
+                        "isPremium": {"type": "boolean"},
+                        "categoryId": {"type": "string"},
+                        "level": {"type": "string"},
+                        "price": {"type": "integer"},
+                        "description": {"type": "string"},
+                        "videoUrl": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Course"],
+        "summary": "Delete course by id",
+        "operationId": "Delete course by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of course to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

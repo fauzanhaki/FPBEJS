@@ -1,7 +1,7 @@
 const express = require("express"),
   router = express.Router(),
-  controllers = require("../../controllers/transaction.controllers/payment.method"),
-  schema = require("../../validation/transaction.schema");
+  controllers = require("../../controllers/transaction.controllers/payment.method.controllers");
+// schema = require("../../validation/transaction.schema");
 
 router.post("/payment-method", controllers.create);
 router.get("/get-payment-method", controllers.getAll);

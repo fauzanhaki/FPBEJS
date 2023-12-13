@@ -17,7 +17,7 @@ module.exports = {
       });
 
       if (!existingUser)
-        return res.status(404).json({ error: true, message: "User Not Found" });
+        return res.status(404).json(utils.apiError("User Not Found"));
 
       const existingCourse = await Course.findUnique({
         where: {
@@ -26,14 +26,12 @@ module.exports = {
       });
 
       if (!existingCourse)
-        return res
-          .status(404)
-          .json({ error: true, message: "Course Not Found" });
+        return res.status(404).json(utils.apiError("Course Not Found"));
 
       if (nilai < 1 || nilai > 5)
         return res
           .status(400)
-          .json({ error: true, message: "Ranting should be between 1 and 5" });
+          .json(utils.apiError("Ranting should be between 1 and 5"));
 
       rantingId = rantingId || courseId;
 
@@ -90,12 +88,9 @@ module.exports = {
           totalRanting: averageRanting,
         },
       });
-
-      return res.status(201).json({
-        error: false,
-        message: "Review created successfully",
-        data: review,
-      });
+      return res
+        .status(200)
+        .json(utils.apiSuccess("Review created successfully", review));
     } catch (error) {
       console.error(error);
       return res.status(500).json(utils.apiError("Internal Server Error"));
@@ -127,11 +122,9 @@ module.exports = {
         },
       });
 
-      return res.status(200).json({
-        error: false,
-        message: "All reviews retrieved successfully",
-        data: allReviews,
-      });
+      return res
+        .status(200)
+        .json(utils.apiSuccess("All Review retrived successfully", allReviews));
     } catch (error) {
       console.error(error);
       return res.status(500).json(utils.apiError("Internal Server Error"));
@@ -166,8 +159,9 @@ module.exports = {
       });
       if (!data || data.length === 0)
         return res.status(404).json({ message: "Not Found" });
-
-      return res.status(200).json({ data });
+      return res
+        .status(200)
+        .json(utils.apiSuccess("Review retrieved successfully", data));
     } catch (error) {
       console.error(error);
       return res.status(500).json(utils.apiError("Internal Server Error"));
@@ -183,9 +177,7 @@ module.exports = {
       });
 
       if (!existingReviews) {
-        return res
-          .status(404)
-          .json({ error: true, message: "Review not found" });
+        return res.status(404).json(utils.apiError("Review not found"));
       }
 
       await Review.delete({
@@ -193,11 +185,9 @@ module.exports = {
           id: parseInt(req.params.id),
         },
       });
-      return res.status(200).json({
-        error: false,
-        message: "Review delete successfully",
-        data: existingReviews,
-      });
+      return res
+        .status(200)
+        .json(utils.apiSuccess("Review delete successfully", existingReviews));
     } catch (error) {
       console.error(error);
       return res.status(500).json(utils.apiError("Internal Server Error"));

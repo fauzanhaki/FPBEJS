@@ -16,7 +16,7 @@ module.exports = {
       });
 
       if (!existingUser)
-        return res.status(404).json({ error: true, message: "User Not Found" });
+        return res.status(404).json(utils.apiError("User Not Found"));
 
       const existingCourse = await Course.findUnique({
         where: {
@@ -25,9 +25,7 @@ module.exports = {
       });
 
       if (!existingCourse)
-        return res
-          .status(404)
-          .json({ error: true, message: "Course Not Found" });
+        return res.status(404).json(utils.apiError("Course Not Found"));
 
       const existingPayment = await PaymentMethod.findUnique({
         where: {
@@ -36,9 +34,7 @@ module.exports = {
       });
 
       if (!existingPayment)
-        return res
-          .status(404)
-          .json({ error: true, message: "Payment Method Not Found" });
+        return res.status(404).json(utils.apiError("Payment Method Not Found"));
 
       const successfulPayment = true;
 
@@ -59,14 +55,13 @@ module.exports = {
           paymentStatus: successfulPayment,
         },
       });
-
-      return res.status(201).json({
-        error: false,
-        message: "Transaction successfully",
-        data: transaction,
-      });
+      return res
+        .status(200)
+        .json(
+          utils.apiSuccess("Created Transaction successfully", transaction)
+        );
     } catch (error) {
-      console.error(error);
+      console.log(error);
       return res.status(500).json(utils.apiError("Internal Server Error"));
     }
   },
@@ -95,13 +90,16 @@ module.exports = {
           },
         },
       });
-      return res.status(200).json({
-        error: false,
-        message: "All Transaction retrieved successfully",
-        data: allTransaction,
-      });
+      return res
+        .status(200)
+        .json(
+          utils.apiSuccess(
+            "All Transaction retrieved successfully",
+            allTransaction
+          )
+        );
     } catch (error) {
-      console.error(error);
+      console.log(error);
       return res.status(500).json(utils.apiError("Internal Server Error"));
     }
   },
@@ -115,9 +113,7 @@ module.exports = {
       });
 
       if (!existingTransaction) {
-        return res
-          .status(404)
-          .json({ error: true, message: "Transaction not found" });
+        return res.status(404).json(utils.apiError("Transaction not found"));
       }
 
       await Transaction.delete({
@@ -125,13 +121,16 @@ module.exports = {
           id: parseInt(req.params.id),
         },
       });
-      return res.status(200).json({
-        error: false,
-        message: "Transaction delete successfully",
-        data: existingTransaction,
-      });
+      return res
+        .status(200)
+        .json(
+          utils.apiSuccess(
+            "Transaction delete successfully",
+            existingTransaction
+          )
+        );
     } catch (error) {
-      console.error(error);
+      console.log(error);
       return res.status(500).json(utils.apiError("Internal Server Error"));
     }
   },
