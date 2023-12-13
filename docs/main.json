@@ -641,7 +641,7 @@
         }
       }
     },
-    "/course/getBy/:id": {
+    "/course/getBy/{id}": {
       "get": {
         "tags": ["Course"],
         "operationId": "get course by id",
