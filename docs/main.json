@@ -23,6 +23,10 @@
       "description": "Find all about user router here"
     },
     {
+      "name": "Profile",
+      "description": "Find all about profile router here"
+    },
+    {
       "name": "Category",
       "description": "Find all about category router here"
     },
@@ -208,10 +212,15 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {"type": "string"},
-                    "username": {"type": "string"},
-                    "email": {"type": "string"},
-                    "role": {"type": "string"}
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "username": {"type": "string"},
+                        "email": {"type": "string"},
+                        "role": {"type": "string"}
+                      }
+                    }
                   }
                 }
               }
