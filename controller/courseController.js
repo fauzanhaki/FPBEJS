@@ -1,18 +1,5 @@
-
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-const {course} = require('../utils')
-
-/*
-name
-courseCode
-isPremium boolean
-categoryId
-level
-price
-description
-videoUrl
-*/
 
 module.exports = {
   createCourse: async (req, res, next) => {

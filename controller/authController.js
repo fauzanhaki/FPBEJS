@@ -1,5 +1,5 @@
 const { users } = require('../models');
-const { cryptPassword, verifyHashed, encryptToken, createToken } = require('../utils');
+const { verifyHashed, createToken } = require('../utils');
 
 module.exports = {
     login: async (req, res) => {
@@ -12,7 +12,7 @@ module.exports = {
             });
             if (!user) return res.status(403).json({ message: "Email incorrect"})
 
-            const verifyPassword = await verifyHashed(password, user.password);
+            const verifyPassword = await verifyHashed(password, user.password.toString());
             if (!verifyPassword) return res.status(403).json({ message: "Password is incorrect"})
 
             const payload = ({ id: user.id, email: user.email });

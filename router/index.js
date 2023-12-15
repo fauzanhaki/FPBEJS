@@ -7,7 +7,7 @@ const express = require('express'),
     
     
 
-router.use(authRouter);
+router.use('/auth', authRouter);
 router.use('/category', categoryRouter);
 router.use('/course', courseRouter);
 router.use('/user', userRouter);
