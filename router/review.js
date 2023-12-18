@@ -2,24 +2,24 @@ const express = require("express"),
   router = express.Router(),
   checkToken = require("../middleware/checkToken"),
   checkRole = require("../middleware/check.role"),
-  controller = require("../controller/authController");
+  controllers = require("../controller/review.controllers");
 
 const Roles = {
   ADMIN: "admin",
   MENTOR: "mentor",
 };
 
-router.post("/login", controller.login);
+router.post("/review", checkToken, controllers.createReview);
 
-router.post("/register-user", controller.createUser);
+router.get("/allReview", controllers.getAllReview);
 
-router.post(
-  "/register-admin",
+router.get("/reviews/:id", controllers.getById);
+
+router.delete(
+  "/delete-review/:id",
   checkToken,
   checkRole.authPage([Roles.ADMIN]),
-  controller.createAdmin
+  controllers.destroy
 );
-
-router.get("/me", checkToken, controller.me);
 
 module.exports = router;
