@@ -1,35 +1,33 @@
 {
-  "name": "example-mooc",
+  "name": "final-project",
   "version": "1.0.0",
-  "prisma": {
-    "seed": "node prisma/seed.js"
-  },
   "description": "",
   "main": "index.js",
+  "prisma": {
+    "seed": "node prisma/seeder.js"
+  },
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.5.2",
+    "@prisma/client": "^5.6.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
-    "dotenv": "^16.3.1",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
-    "express-validator": "^7.0.1",
-    "google-auth-library": "^9.4.1",
     "imagekit": "^4.1.4",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.7"
+    "prisma": "^5.6.0",
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.2.0",
     "nodemon": "^3.0.1",
-    "prisma": "^5.5.2",
     "prisma-generator-fake-data": "^0.13.0"
   }
 }

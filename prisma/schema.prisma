@@ -10,29 +10,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Role {
-  id   Int    @id @default(autoincrement())
-  name String
-  user User?
+enum Role {
+  user
+  admin
+  mentor
 
   @@map("roles")
 }
 
 model User {
-  id                Int            @id @default(autoincrement())
-  username          String
-  email             String
-  password          String
-  resetToken        String?        @map("reset_token")
-  verificationToken String?        @map("verification_token")
-  roleId            Int            @unique @map("role_id")
-  role              Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  profile           Profile?
-  notification      Notification[]
-  review            Review[]
-  transaction       Transaction[]
-  createdAt         DateTime       @default(now()) @map("created_at")
-  updatedAt         DateTime       @updatedAt @map("updated_at")
+  id                 Int            @id @default(autoincrement())
+  username           String
+  email              String         @unique
+  password           String
+  resetPasswordToken String?        @map("reset_password_token")
+  verificationToken  String?        @map("verification_token")
+  role               Role
+  profile            Profile?
+  notification       Notification[]
+  review             Review[]
+  transaction        Transaction[]
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
 
   @@map("users")
 }
@@ -54,105 +53,101 @@ model Profile {
 }
 
 model Notification {
-  id        Int      @id @default(autoincrement())
-  message   String
-  time      DateTime
-  isRead    Boolean  @map("is_reads")
-  userId    Int      @unique @map("user_id")
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id      Int      @id @default(autoincrement())
+  message String
+  time    DateTime @default(now())
+  isRead  Boolean
+  userId  Int
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("notifications")
 }
 
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  course    Course[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("categories")
+}
+
+enum Level {
+  beginner
+  intermediate
+  advanced
+
+  @@map("levels")
+}
+
+model Course {
+  id          Int           @id @default(autoincrement())
+  name        String
+  courseCode  String        @map("course_code")
+  isPremium   Boolean       @map("is_premium")
+  categoryId  Int           @map("category_id")
+  level       Level
+  price       Int
+  description String?
+  videoUrl    String        @map("video_url")
+  Transaction Transaction[]
+  review      Review[]
+  category    Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  @@map("courses")
+}
+
+model PaymentMethod {
+  id          Int           @id @default(autoincrement())
+  name        String
+  Transaction Transaction[]
+  createdAt   DateTime      @default(now()) @map("crated_at")
+  updatedAt   DateTime      @updatedAt
+
+  @@map("payment_method")
+}
+
+model Transaction {
+  id              Int           @id @default(autoincrement())
+  userId          Int           @map("user_id")
+  courseId        Int           @map("course_id")
+  paymentMethodId Int           @map("payment_method_id")
+  totalHarga      Float         @map("total_harga")
+  paymentStatus   Boolean
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course          Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("transactions")
+}
+
 model Review {
   id        Int      @id @default(autoincrement())
-  nilai     Float?   @map("nilai_Ranting")
+  nilai     Float?
   feedback  String?
-  userId    Int      @map("user_id")
-  courseId  Int      @map("course_id")
-  rantingId Int      @map("ranting_id")
+  userId    Int
+  courseId  Int
+  rantingId Int?
   date      DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  ranting   Ranting  @relation(fields: [rantingId], references: [id], onDelete: Cascade)
+  ranting   Ranting? @relation(fields: [rantingId], references: [id], onDelete: SetNull)
 
   @@map("reviews")
 }
 
 model Ranting {
-  id           Int      @id @default(autoincrement())
+  id           Int      @id
   totalRanting Float?   @map("total_ranting")
-  rewie        Review[]
+  reviews      Review[]
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("ranting")
-}
-
-model Transaction {
-  id                Int                 @id @default(autoincrement())
-  userId            Int                 @unique @map("user_id")
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  detailTransaction DetailTransaction[]
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
-
-  @@map("transactions")
-}
-
-model DetailTransaction {
-  id            Int           @id @default(autoincrement())
-  courseId      Int           @unique @map("course_id")
-  transactionId Int           @unique @map("transaction_id")
-  paymentMethod PaymentMethod @default(PREMIUM)
-  paymentStatus Boolean
-  course        Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  transaction   Transaction   @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
-
-  @@map("details_transactions")
-}
-
-model Course {
-  id                Int                 @id @default(autoincrement())
-  name              String
-  courseCode        String              @map("course_code")
-  isPremium         Boolean             @map("is_premium")
-  categoryId        Int                 @map("category_id")
-  levelId           Int                 @map("level_id")
-  harga             String
-  description       String?
-  category          Category            @relation("course_categories", fields: [categoryId], references: [id], onDelete: Cascade)
-  level             Level               @relation("course_levels", fields: [levelId], references: [id], onDelete: Cascade)
-  review            Review[]
-  detailTransaction DetailTransaction[]
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime            @updatedAt @map("updated_at")
-
-  @@map("courses")
-}
-
-model Category {
-  id     Int      @id @default(autoincrement())
-  name   String
-  course Course[] @relation("course_categories")
-
-  @@map("categories")
-}
-
-model Level {
-  id     Int      @id @default(autoincrement())
-  name   String
-  course Course[] @relation("course_levels")
-
-  @@map("levels")
-}
-
-enum PaymentMethod {
-  PREMIUM
-  FREE
+  @@map("rantings")
 }
