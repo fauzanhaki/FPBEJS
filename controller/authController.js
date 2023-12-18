@@ -18,7 +18,7 @@ module.exports = {
             const payload = ({ id: user.id, email: user.email });
             const token = createToken(payload);
 
-            return res.status(200).json({ token });
+            return res.status(200).json({ data: {id: user.id, token} });
 
         } catch (error) {
             return res.status(500).json({ error: "Internal Server Error" });

@@ -112,7 +112,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "token": {"type": "string"}
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "string"},
+                        "token": {"type": "string"}
+                      }
+                    }
                   }
                 }
               }
