@@ -19,28 +19,12 @@
       "description": "Find all about auth router here"
     },
     {
-      "name": "User",
-      "description": "Find all about user router here"
-    },
-    {
-      "name": "Profile",
-      "description": "Find all about profile router here"
-    },
-    {
       "name": "Category",
       "description": "Find all about category router here"
     },
     {
       "name": "Course",
       "description": "Find all about course router here"
-    },
-    {
-      "name": "Payment",
-      "description": "Find all about payment method router here"
-    },
-    {
-      "name": "Transaction",
-      "description": "Find all about transaction router here"
     }
   ],
   "paths": {
@@ -124,7 +108,7 @@
     "/auth/forgot-password": {
       "post": {
         "tags": ["Auth"],
-        "operationId": "forgot password",
+        "operationId": "forgotPassword",
         "summary": "forgotPassword user",
         "requestBody": {
           "content": {
@@ -187,7 +171,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "message": {"type": "string"}
+                        "newPassword": {"type": "string"}
                       }
                     }
                   }
@@ -199,172 +183,6 @@
       }
     },
 
-
-    "/user": {
-      "get": {
-        "tags": ["User"],
-        "operationId": "Get all user",
-        "summary": "Get All User",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "username": {"type": "string"},
-                        "email": {"type": "string"},
-                        "role": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user/{id}": {
-      "get": {
-        "tags": ["User"],
-        "operationId": "Get user and profile user",
-        "summary": "Get user and profile user",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of user to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "username": {"type": "string"},
-                        "email": {"type": "string"},
-                        "role": {"type": "string"},
-                        "profile": {
-                          "type": "object",
-                          "properties": {
-                            "name": {"type": "string"},
-                            "no_telp": {"type": "string"},
-                            "profilePicture": {"type": "string"},
-                            "city": {"type": "string"},
-                            "province": {"type": "string"},
-                            "country": {"type": "string"},
-                            "userId": {"type": "string"},
-                            "createdAt": {"type": "string"},
-                            "updatedAt": {"type": "string"}
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["User"],
-        "operationId": "",
-        "summary": "Change user username, email, role",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "username": {"type": "string"},
-                  "email": {"type": "string"},
-                  "role": {"type": "string"}
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "email": {"type": "string"},
-                        "password": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["User"],
-        "operationId": "Delete User",
-        "summary": "Delete User By Id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of user to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                        "message": {"type": "string"},
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "id": {"type": "number"},
-                            "username": {"type": "string"},
-                            "email": {"type": "string"},
-                            "role": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
 
 
     "/category/create": {
@@ -394,10 +212,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
+                        "name": {"type": "string"}
                       }
                     }
                   }
@@ -423,10 +238,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
+                        "name": {"type": "string"}
                       }
                     }
                   }
@@ -438,45 +250,6 @@
       }
     },
     "/category/{id}": {
-      "get": {
-        "tags": ["Category"],
-        "summary": "Get category by id",
-        "operationId": "Get category by id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of category to return",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "put": {
         "tags": ["Category"],
         "operationId": "update category",
@@ -511,15 +284,47 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": {                    
-                      "message": {"type": "string"},
-                      "data": {
-                        "type": "object",
-                        "properties": {
-                          "id": {"type": "number"},
-                          "name": {"type": "string"},
-                          "createdAt": {"type": "string"},
-                          "updatedAt": {"type": "string"}
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Category"],
+        "summary": "Get category by id",
+        "operationId": "Get category by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of category to return",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {"type": "string"}
                       }
                     }
                   }
@@ -552,16 +357,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": {"type": "string"},
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
+                        "name": {"type": "string"}
                       }
-                    } 
+                    }
                   }
                 }
               }
@@ -590,8 +391,7 @@
                   "level": {"type": "string"},
                   "price": {"type": "integer"},
                   "description": {"type": "string"},
-                  "videoUrl": {"type": "string"},
-                  "userId": {"type":"string"}
+                  "videoUrl": {"type": "string"}
                 }
               }
             }
@@ -607,7 +407,6 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -615,10 +414,7 @@
                         "level": {"type": "string"},
                         "price": {"type": "integer"},
                         "description": {"type": "string"},
-                        "videoUrl": {"type": "string"},
-                        "mentor": {"type":"string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
+                        "videoUrl": {"type": "string"}
                       }
                     }
                   }
@@ -644,7 +440,6 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -652,10 +447,7 @@
                         "level": {"type": "string"},
                         "price": {"type": "integer"},
                         "description": {"type": "string"},
-                        "videoUrl": {"type": "string"},
-                        "mentor": {"type":"string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
+                        "videoUrl": {"type": "string"}
                       }
                     }
                   }
@@ -666,11 +458,11 @@
         }
       }
     },
-    "/course/getBy/{id}": {
+    "/course/{id}": {
       "get": {
         "tags": ["Course"],
-        "operationId": "get course by id",
-        "summary": "get course by id",
+        "summary": "Get course by id",
+        "operationId": "Get course by id",
         "parameters": [
           {
             "name": "id",
@@ -693,7 +485,6 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -701,10 +492,7 @@
                         "level": {"type": "string"},
                         "price": {"type": "integer"},
                         "description": {"type": "string"},
-                        "videoUrl": {"type": "string"},
-                        "mentor": {"type":"string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
+                        "videoUrl": {"type": "string"}
                       }
                     }
                   }
@@ -713,83 +501,7 @@
             }
           }
         }
-      }
-    },
-    "/course/search?name={name course}": {
-      "get": {
-        "tags": ["Course"],
-        "operationId": "search course",
-        "summary": "search course",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "courseCode": {"type": "string"},
-                        "isPremium": {"type": "boolean"},
-                        "categoryId": {"type": "string"},
-                        "level": {"type": "string"},
-                        "price": {"type": "integer"},
-                        "description": {"type": "string"},
-                        "videoUrl": {"type": "string"},
-                        "mentor": {"type":"string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/course/pagination?page={index}&limit={index}": {
-      "get": {
-        "tags": ["Course"],
-        "operationId": "pagination course",
-        "summary": "pagination course",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "courseCode": {"type": "string"},
-                        "isPremium": {"type": "boolean"},
-                        "categoryId": {"type": "string"},
-                        "level": {"type": "string"},
-                        "price": {"type": "integer"},
-                        "description": {"type": "string"},
-                        "videoUrl": {"type": "string"},
-                        "mentor": {"type":"string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/course/{id}": {
+      },
       "put": {
         "tags": ["Course"],
         "operationId": "update course",
@@ -819,8 +531,7 @@
                   "level": {"type": "string"},
                   "price": {"type": "integer"},
                   "description": {"type": "string"},
-                  "videoUrl": {"type": "string"},
-                  "userId": {"type":"string"}
+                  "videoUrl": {"type": "string"}
                 }
               }
             }
@@ -833,11 +544,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": {"type": "string"},
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {"type": "number"},
                         "name": {"type": "string"},
                         "courseCode": {"type": "string"},
                         "isPremium": {"type": "boolean"},
@@ -845,10 +554,7 @@
                         "level": {"type": "string"},
                         "price": {"type": "integer"},
                         "description": {"type": "string"},
-                        "videoUrl": {"type": "string"},
-                        "mentor": {"type":"string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
+                        "videoUrl": {"type": "string"}
                       }
                     }
                   }
@@ -881,325 +587,6 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": {"type": "string"},
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "courseCode": {"type": "string"},
-                        "isPremium": {"type": "boolean"},
-                        "categoryId": {"type": "string"},
-                        "level": {"type": "string"},
-                        "price": {"type": "integer"},
-                        "description": {"type": "string"},
-                        "videoUrl": {"type": "string"},
-                        "mentor": {"type":"string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-
-    "/payment-method": {
-      "post": {
-        "tags": ["Payment"],
-        "operationId": "Create payment method",
-        "summary": "Create payment method",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                  "properties": {
-                    "name": {"type": "string"}
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/get-payment-method": {
-      "get": {
-        "tags": ["Payment"],
-        "operationId": "Get all payment method",
-        "summary": "Get all payment method",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/update-payment-method/{id}": {
-      "put": {
-        "tags": ["Payment"],
-        "operationId": "Get payment method by id",
-        "summary": "Get payment method by id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of user to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                  "properties": {
-                    "name": {"type": "string"}
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/delete-payment-method/{id}": {
-      "delete": {
-        "tags": ["Payment"],
-        "operationId": "delete payment method by id",
-        "summary": "delete payment method by id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of user to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {"type": "string"},
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "number"},
-                        "name": {"type": "string"},
-                        "createdAt": {"type":"string"},
-                        "updatedAt": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-
-    "/transaction/create": {
-      "post": {
-        "tags": ["Transaction"],
-        "operationId": "create transaction",
-        "summary": "create new transaction",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {"type": "number"}
-                  
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/transaction/": {
-      "get": {
-        "tags": ["Transaction"],
-        "operationId": "get transaction",
-        "summary": "get all transaction",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "string"}
-                        
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/transaction/{id}": {
-      "get": {
-        "tags": ["Transaction"],
-        "summary": "Get detail transaction by id",
-        "operationId": "Get transaction by id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of transaction to return",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {"type": "string"}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Transaction"],
-        "summary": "Delete transaction by id",
-        "operationId": "Delete transaction by id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of transaction to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
                     "message": {"type": "string"}
                   }
                 }
@@ -1211,4 +598,3 @@
     }
   }
 }
-
