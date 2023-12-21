@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
+const otpGenerator = require('otp-generator');
 const secret_key = process.env.JWT_KEY;
 
 const createToken = (payload) => {
     const expiration = Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 6); // 6 hari
-    return jwt.sign({ payload, exp: expiration }, secret_key);
+    return jwt.sign(payload, secret_key, {expiresIn: expiration});
 }
 
 const cryptPassword = (password) => {
@@ -26,7 +27,7 @@ const verifyHashed = (unhashed, hashed) => {
     }
 };
 
-const encryptToken = async (password) => {
+const encryptEmail = async (password) => {
     try {
         const saltRounds = 5;
         const salt = await bcrypt.genSalt(saltRounds);
@@ -39,9 +40,20 @@ const encryptToken = async (password) => {
     }
 };
 
+function generateOTP() {
+    return otpGenerator.generate(6, { upperCase: false, specialChars: false, lowerCaseAlphabets: false, upperCaseAlphabets: false });
+}
+
+
 module.exports = {
     cryptPassword,
     verifyHashed,
-    encryptToken,
-    createToken
+    encryptEmail,
+    createToken,
+    generateOTP,
+    exclude: (model, keys) => {
+        return Object.fromEntries(
+          Object.entries(model).filter(([key]) => !keys.includes(key))
+        );
+      },
 };

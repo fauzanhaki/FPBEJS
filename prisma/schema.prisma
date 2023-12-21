@@ -38,12 +38,12 @@ model User {
 
 model Profile {
   id             Int      @id @default(autoincrement())
-  name           String
-  no_telp        String
-  profilePicture String   @map("profile_picture")
-  city           String
-  province       String
-  country        String
+  name           String?
+  no_telp        String?
+  profilePicture String?  @map("profile_picture")
+  city           String?
+  province       String?
+  country        String?
   userId         Int      @unique @map("user_id")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
@@ -133,13 +133,13 @@ model DetailTransaction {
 
 model Review {
   id        Int      @id @default(autoincrement())
-  rating    String
+  rating    Int
   feedback  String
-  date      DateTime @default(now())
   userId    Int      @map("user_id")
   courseId  Int      @map("course_id")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("reviews")

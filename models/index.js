@@ -1,10 +1,14 @@
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
 module.exports = {
-    users: prisma.user,
-    category: prisma.category,
-    course: prisma.course,
-    profile: prisma.profile
-}
+  User: prisma.user,
+  Profile: prisma.profile,
+  Category: prisma.category,
+  Course: prisma.course,
+  Review: prisma.review,
+  PaymentMethod: prisma.paymentMethod,
+  Transaction: prisma.transaction,
+  DetailTransaction: prisma.detailTransaction,
+};

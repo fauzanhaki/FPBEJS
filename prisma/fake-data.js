@@ -103,9 +103,8 @@ function fakeDetailTransaction() {
 
 function fakeReview() {
   return {
-    rating: faker.lorem.words(5),
+    rating: faker.number.int({min: 1, max: 5}),
     feedback: faker.lorem.words(5),
-    date: new Date(),
   };
 }
 

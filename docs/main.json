@@ -41,6 +41,10 @@
     {
       "name": "Transaction",
       "description": "Find all about transaction router here"
+    },
+    {
+      "name": "Review",
+      "description": "Find all about review router here"
     }
   ],
   "paths": {
@@ -57,6 +61,7 @@
                 "properties": {
                   "username": {"type": "string"},
                   "email": {"type": "string"},
+                  "no_telp": {"type": "string"},
                   "password": {"type": "string"}
                 }
               }
@@ -76,7 +81,12 @@
                         "id": {"type": "number"},
                         "name": {"type": "string"},
                         "email": {"type": "string"},
-                        "password": {"type": "string"}
+                        "profile": {
+                          "type": "object",
+                          "properties": {
+                            "no_telp": {"type": "string"}
+                          }
+                        }
                       }
                     }
                   }
@@ -92,6 +102,7 @@
         "tags": ["Auth"],
         "operationId": "loginUser",
         "summary": "login user",
+        "description": "You can login with combination {email and password} || {username and password} || {no_telp and password}",
         "requestBody": {
           "content": {
             "application/json": {
@@ -127,11 +138,78 @@
         }
       }
     },
+    "/auth/verify-otp": {
+      "post": {
+        "tags": ["Auth"],
+        "operationId": "verify otp",
+        "summary": "verify user",
+        "description": "this endpoint create for verify otp user that send into email",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "otp": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/send-otp": {
+      "post": {
+        "tags": ["Auth"],
+        "operationId": "send otp",
+        "summary": "send otp user",
+        "description": "This endpoint is created to resend OTP if the user wants a new one.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/forgot-password": {
       "post": {
         "tags": ["Auth"],
         "operationId": "forgot password",
         "summary": "forgotPassword user",
+        "description": "For sent reset password link to email user",
         "requestBody": {
           "content": {
             "application/json": {
@@ -154,7 +232,13 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "resetPasswordToken": {"type": "string"}
+                        "message": {"type": "string"},
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "resetToken": {"type": "string"}
+                          }
+                        }
                       }
                     }
                   }
@@ -194,6 +278,44 @@
                       "type": "object",
                       "properties": {
                         "message": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "operationId": "me",
+        "summary": "Get user",
+        "description": "Put token in authorization, token created once login",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": {"type": "string"},
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "id": {"type": "string"},
+                            "username": {"type": "string"},
+                            "email": {"type": "string"},
+                            "role": {"type": "string"},
+                            "createdAt": {"type": "string"},
+                            "updatedAt": {"type": "string"}
+                          }
+                        }
                       }
                     }
                   }
@@ -361,6 +483,263 @@
                             "username": {"type": "string"},
                             "email": {"type": "string"},
                             "role": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+
+    "/profile/create-profile": {
+      "post": {
+        "tags": ["Profile"],
+        "operationId": "create profile user",
+        "summary": "create profile User",
+        "description": "The user ID is obtained from the conversion token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {"type": "number"},
+                  "name": {"type": "string"},
+                  "no_telp": {"type": "string"},
+                  "profilePicture": {"type": "string"},
+                  "city": {"type": "string"},
+                  "province": {"type": "string"},
+                  "country": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {"type": "number"},
+                        "name": {"type": "string"},
+                        "no_telp": {"type": "string"},
+                        "profilePicture": {"type": "string"},
+                        "city": {"type": "string"},
+                        "province": {"type": "string"},
+                        "country": {"type": "string"},
+                        "createdAt": {"type": "string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/all-profiles": {
+      "get": {
+        "tags": ["Profile"],
+        "operationId": "get profile user",
+        "summary": "Get all profile User",
+        "description": "For get all profile user, you must have role admin. Don't forget put token, cause if not it won't work",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {"type": "number"},
+                        "name": {"type": "string"},
+                        "no_telp": {"type": "string"},
+                        "profilePicture": {"type": "string"},
+                        "city": {"type": "string"},
+                        "province": {"type": "string"},
+                        "country": {"type": "string"},
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {"type": "number"},
+                            "username": {"type": "string"},
+                            "email": {"type": "string"}
+                          }
+                        },
+                        "createdAt": {"type": "string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/my-profile": {
+      "get": {
+        "tags": ["Profile"],
+        "operationId": "get profile",
+        "summary": "Get profile User",
+        "description": "For get profile purpose. Don't forget put token, cause if it's not, it won't work",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {"type": "number"},
+                        "name": {"type": "string"},
+                        "no_telp": {"type": "string"},
+                        "profilePicture": {"type": "string"},
+                        "city": {"type": "string"},
+                        "province": {"type": "string"},
+                        "country": {"type": "string"},
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {"type": "number"},
+                            "username": {"type": "string"},
+                            "email": {"type": "string"}
+                          }
+                        },
+                        "createdAt": {"type": "string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/update-my-profile": {
+      "put": {
+        "tags": ["Profile"],
+        "operationId": "update profile",
+        "summary": "Update profile User",
+        "description": "For update profile purpose. Don't forget put token, cause if it's not, it won't work",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {"type": "number"},
+                  "name": {"type": "string"},
+                  "no_telp": {"type": "string"},
+                  "profilePicture": {"type": "string"},
+                  "city": {"type": "string"},
+                  "province": {"type": "string"},
+                  "country": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {"type": "number"},
+                        "name": {"type": "string"},
+                        "no_telp": {"type": "string"},
+                        "profilePicture": {"type": "string"},
+                        "city": {"type": "string"},
+                        "province": {"type": "string"},
+                        "country": {"type": "string"},
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {"type": "number"},
+                            "username": {"type": "string"},
+                            "email": {"type": "string"}
+                          }
+                        },
+                        "createdAt": {"type": "string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profile/delete-profile/{id}": {
+      "delete": {
+        "tags": ["Profile"],
+        "operationId": "delete profile",
+        "summary": "Delete profile User",
+        "description": "Delete profile purpose and you must have role admin. Don't forget put token, cause if it's not, it won't work",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of profile to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {"type": "number"},
+                        "name": {"type": "string"},
+                        "no_telp": {"type": "string"},
+                        "profilePicture": {"type": "string"},
+                        "city": {"type": "string"},
+                        "province": {"type": "string"},
+                        "country": {"type": "string"},
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {"type": "number"},
+                            "username": {"type": "string"},
+                            "email": {"type": "string"}
+                          }
+                        },
+                        "createdAt": {"type": "string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -953,12 +1332,10 @@
             }
           }
         }
-      }
-    },
-    "/get-payment-method": {
+      },
       "get": {
         "tags": ["Payment"],
-        "operationId": "Get all payment method",
+        "operationId": "get payment method",
         "summary": "Get all payment method",
         "responses": {
           "200": {
@@ -1085,14 +1462,17 @@
         "tags": ["Transaction"],
         "operationId": "create transaction",
         "summary": "create new transaction",
+        "description": "The user ID is obtained through token conversion. So, don't forget to include the token in the Authorization Bearer.",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": {"type": "number"}
-                  
+                  "userId": {"type": "number"},
+                  "courseId": {"type": "number"},
+                  "paymentMethodId": {"type": "number"},
+                  "paymentStatus": {"type": "boolean"}
                 }
               }
             }
@@ -1108,7 +1488,10 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {"type": "string"}
+                        "id": {"type": "number"},
+                        "userId": {"type": "number"},
+                        "createdAt": {"type": "string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -1119,11 +1502,12 @@
         }
       }
     },
-    "/transaction/": {
+    "/transaction/all-transactions": {
       "get": {
         "tags": ["Transaction"],
         "operationId": "get transaction",
         "summary": "get all transaction",
+        "description": "Don't forget to include the token in the Authorization Bearer.",
         "responses": {
           "200": {
             "content": {
@@ -1134,8 +1518,17 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {"type": "string"}
-                        
+                        "id": {"type": "number"},
+                        "username": {"type": "string"},
+                        "course": {"type": "string"},
+                        "courseCode": {"type": "string"},
+                        "courseLevel": {"type": "string"},
+                        "category": {"type": "string"},
+                        "price": {"type": "number"},
+                        "paymentStatus": {"type": "string"},
+                        "paymentMethod": {"type": "string"},
+                        "createdAt": {"type": "string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
@@ -1147,10 +1540,11 @@
       }
     },
     "/transaction/{id}": {
-      "get": {
+      "delete": {
         "tags": ["Transaction"],
         "summary": "Get detail transaction by id",
         "operationId": "Get transaction by id",
+        "description": "Delete transaction by id, you must have role admin and put token in authorization",
         "parameters": [
           {
             "name": "id",
@@ -1173,7 +1567,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {"type": "string"}
+                        "message": {"type": "string"}
                       }
                     }
                   }
@@ -1182,16 +1576,181 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": ["Transaction"],
-        "summary": "Delete transaction by id",
-        "operationId": "Delete transaction by id",
+      }
+    },
+
+    "/review/create-review": {
+      "post": {
+        "tags": ["Review"],
+        "operationId": "Create Review",
+        "summary": "Create Review",
+        "description": "This endpoint for create review. Don't forget put token in authorization",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                  "properties": {
+                    "rating": {"type": "number"},
+                    "feedback": {"type": "string"},
+                    "userId": {"type": "string"},
+                    "courseId": {"type": "number"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "rating": {"type": "number"},
+                        "feedback": {"type": "string"},
+                        "userId": {"type": "number"},
+                        "courseId": {"type": "number"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/all-reviews": {
+      "get": {
+        "tags": ["Review"],
+        "operationId": "Get Review",
+        "summary": "Get All Review",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "rating": {"type": "number"},
+                        "feedback": {"type": "string"},
+                        "userId": {"type": "number"},
+                        "courseId": {"type": "number"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/review-course/{id}": {
+      "get": {
+        "tags": ["Review"],
+        "operationId": "Get Review By Id",
+        "summary": "Get Review By Id",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "ID of transaction to delete",
+            "description": "ID of review to return",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "rating": {"type": "number"},
+                        "feedback": {"type": "string"},
+                        "userId": {"type": "number"},
+                        "courseId": {"type": "number"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/review/update-review/{id}": {
+      "put": {
+        "tags": ["Review"],
+        "operationId": "Update Review By Id",
+        "summary": "Update Review By Id",
+        "description": "For use this endpoint, you must have token and put in on authorization",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of review to return",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "rating": {"type": "number"},
+                        "feedback": {"type": "string"},
+                        "userId": {"type": "number"},
+                        "courseId": {"type": "number"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/delete-review/{id}": {
+      "delete": {
+        "tags": ["Review"],
+        "operationId": "Delete Review By Id",
+        "summary": "Delete Review By Id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of review to return",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1215,6 +1774,7 @@
         }
       }
     }
+
   }
 }
 

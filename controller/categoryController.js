@@ -1,15 +1,15 @@
-const { category } = require('../models');
+const { Category } = require('../models');
 
 module.exports = {
     create: async (req, res, next) => {
         try {
-            const existCategory = await category.findMany();
+            const existCategory = await Category.findMany();
             
             existCategory.map(category => {
                 if(category.name.toLowerCase() == req.body.name.toLowerCase()) return res.status(409).json({message: "Category already defined"})
             });
 
-            const data = await category.create({
+            const data = await Category.create({
                 data: {
                     name: req.body.name
                 }
@@ -28,7 +28,7 @@ module.exports = {
     
     get: async (req, res, next) => {
         try {
-            const data = await category.findMany()
+            const data = await Category.findMany()
 
             if (!data) return res.status(403).json({ message: "Not found" })
 
@@ -43,7 +43,7 @@ module.exports = {
     getById: async (req, res, next) => {
         try {
 
-            const data = await category.findUnique({
+            const data = await Category.findUnique({
                 where: {
                     id: parseInt(req.params.id)
                 }
@@ -60,7 +60,7 @@ module.exports = {
 
     update: async (req, res, next) => {
         try {
-            const existCategory = await category.findUnique({
+            const existCategory = await Category.findUnique({
                 where: {
                     id: parseInt(req.params.id)
                 }
@@ -68,7 +68,7 @@ module.exports = {
 
             if (!existCategory) return res.status(403).json({ message: "Not found" })
 
-            const data = await category.update({
+            const data = await Category.update({
                 where: {
                     id: parseInt(req.params.id)
                 },
@@ -88,7 +88,7 @@ module.exports = {
 
     destroy: async (req, res, next) => {
         try {
-            let data = await category.findUnique({
+            let data = await Category.findUnique({
                 where: {
                     id: parseInt(req.params.id)
                 }

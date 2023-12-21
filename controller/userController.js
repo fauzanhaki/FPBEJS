@@ -1,17 +1,18 @@
-const { users } = require('../models');
+const { User } = require('../models');
+const {exclude} = require("../utils")
 
 module.exports = {
     changeUser: async (req, res, next) => {
         const userId = req.params.id;
         try {
 
-            const user = await users.findUnique({
+            const user = await User.findUnique({
                 where: { id: Number(userId) }
             })
 
             if (!user) return res.status(404).json({ message: "User not found" });
 
-            const data = await users.update({
+            const userUpdate = await User.update({
                 where: { id: Number(userId) },
                 data: {
                     email: req.body.email,
@@ -19,6 +20,12 @@ module.exports = {
                     role: req.body.role.toLowerCase().trim()
                 }
             })
+
+             data = exclude(userUpdate, [
+                "password",
+                "resetPasswordToken",
+                "verificationToken",
+              ]);
 
             return res.status(200).json({ message: "Update success", data })
         }
@@ -29,7 +36,7 @@ module.exports = {
 
     getAllUser: async (req, res, next) => {
         try {
-            const data = await users.findMany({
+            const data = await User.findMany({
                 select: {
                     id: true,
                     email: true,
@@ -52,7 +59,7 @@ module.exports = {
         try {
             const userId = req.params.id;
 
-            const data = await users.findUnique({
+            const data = await User.findUnique({
                 where: { id: Number(userId) },
                 select: {
                     id: true,
@@ -75,9 +82,7 @@ module.exports = {
                 }
             });
 
-
             if (!data) return res.status(404).json({ message: "User not found" })
-
             return res.status(200).json({ data })
         } catch (error) {
             next(error)
@@ -87,15 +92,21 @@ module.exports = {
     deleteUser: async (req, res, next) => {
         try {
             const userId = req.params.id;
-            const user = await users.findUnique({
+            const user = await User.findUnique({
                 where: { id: Number(userId) }
             })
 
             if (!user) return res.status(404).json("User not found");
 
-            const data = await users.delete({
+            const userDelete = await User.delete({
                 where: { id: user.id }
             })
+
+            data = exclude(userDelete, [
+                "password",
+                "resetPasswordToken",
+                "verificationToken",
+              ]);
 
             return res.status(200).json({ message: "Delete success", data })
         } catch (error) {
