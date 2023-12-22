@@ -12,7 +12,7 @@ module.exports = {
           return res.status(500).json({ message: "Error uploading file" });
         }
 
-        let { name, phone, city, province, country } = req.body;
+        let { name, no_telp, city, province, country } = req.body;
         const userIdFromToken = res.user.id;
 
         const existingUser = await User.findUnique({
@@ -42,11 +42,11 @@ module.exports = {
           }
         }
 
-        const profile = await Profile.create({
+        const data = await Profile.create({
           data: {
             name: name,
-            phone: phone,
-            picture: pictureUrl,
+            no_telp: no_telp,
+            profilePicture: pictureUrl,
             city: city,
             province: province,
             country: country,
@@ -56,22 +56,21 @@ module.exports = {
 
         return res
           .status(200)
-          .json({ message: "Profile created successfully", profile });
+          .json({ message: "Profile created successfully", data });
       });
     } catch (error) {
-      console.error(error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },
 
   getAll: async (req, res) => {
     try {
-      const allProfile = await Profile.findMany({
+      const data = await Profile.findMany({
         select: {
           id: true,
           name: true,
-          phone: true,
-          picture: true,
+          no_telp: true,
+          profilePicture: true,
           city: true,
           province: true,
           country: true,
@@ -86,9 +85,8 @@ module.exports = {
       });
       return res
         .status(200)
-        .json({ message: "All Review retrived successfully", allProfile });
+        .json({ message: "All Review retrived successfully", data });
     } catch (error) {
-      console.error(error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },
@@ -97,15 +95,15 @@ module.exports = {
     try {
       const userId = res.user.id;
 
-      const profile = await Profile.findUnique({
+      const data = await Profile.findUnique({
         where: {
           userId: userId,
         },
         select: {
           id: true,
           name: true,
-          phone: true,
-          picture: true,
+          no_telp: true,
+          profilePicture: true,
           city: true,
           province: true,
           country: true,
@@ -119,15 +117,15 @@ module.exports = {
         },
       });
 
-      if (!profile) {
+      if (!data) {
         return res.status(404).json({ message: "Profile not found" });
       }
 
       return res
         .status(200)
-        .json({ message: "Profile retrieved successfully", profile });
+        .json({ message: "Profile retrieved successfully", data });
     } catch (error) {
-      console.error(error);
+      console.log(error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },
@@ -140,7 +138,7 @@ module.exports = {
           return res.status(500).json({ message: "Error uploading file" });
         }
 
-        const { name, phone, city, province, country } = req.body;
+        const { name, no_telp, city, province, country } = req.body;
         const userIdFromToken = res.user.id;
 
         const existingProfile = await Profile.findUnique({
@@ -170,14 +168,14 @@ module.exports = {
           }
         }
 
-        const updatedProfile = await Profile.update({
+        const data = await Profile.update({
           where: {
             userId: userIdFromToken,
           },
           data: {
             name: name || existingProfile.name,
-            phone: phone || existingProfile.phone,
-            picture: pictureUrl,
+            no_telp: no_telp || existingProfile.no_telp,
+            profilePicture: pictureUrl,
             city: city || existingProfile.city,
             province: province || existingProfile.province,
             country: country || existingProfile.country,
@@ -186,7 +184,7 @@ module.exports = {
 
         return res
           .status(200)
-          .json({ message: "Profile update successful", updatedProfile });
+          .json({ message: "Profile update successful", data });
       });
     } catch (error) {
       console.error(error);

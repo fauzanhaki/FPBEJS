@@ -10,23 +10,23 @@ const Roles = {
 };
 
 router.post(
-  "/payment-method",
+  "/",
   checkToken,
   checkRole.authPage([Roles.ADMIN]),
   controllers.create
 );
 
-router.get("/get-payment-method", checkToken, controllers.getAll);
+router.get("/", checkToken, controllers.getAll);
 
 router.put(
-  "/update-payment-method/:id",
+  "/:id",
   checkToken,
   checkRole.authPage([Roles.ADMIN]),
   controllers.update
 );
 
 router.delete(
-  "/delete-payment-method/:id",
+  "/:id",
   checkToken,
   checkRole.authPage([Roles.ADMIN]),
   controllers.destroy

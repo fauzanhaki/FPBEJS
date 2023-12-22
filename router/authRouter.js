@@ -1,25 +1,16 @@
-const express = require("express"),
-  router = express.Router(),
-  checkToken = require("../middleware/checkToken"),
-  checkRole = require("../middleware/check.role"),
-  controller = require("../controller/authController");
+const express = require('express'),
+    router = express.Router(),
+    checkToken = require("../middleware/checkToken"),
+    checkRole = require("../middleware/check.role"),
+    unverifiedUser = require('../middleware/unveifiedUser')
+    controller = require("../controller/authController");
 
-const Roles = {
-  ADMIN: "admin",
-  MENTOR: "mentor",
-};
-
-router.post("/login", controller.login);
-
-router.post("/register-user", controller.createUser);
-
-router.post(
-  "/register-admin",
-  checkToken,
-  checkRole.authPage([Roles.ADMIN]),
-  controller.createAdmin
-);
-
-router.get("/me", checkToken, controller.me);
+router.post('/login', controller.login);
+router.post("/register", controller.register);
+router.post("/send-otp", checkToken, controller.sendOTP);
+router.post("/verify-otp", checkToken, unverifiedUser, controller.verifyOtp),
+router.post("/forgot-password", controller.forgotPassword),
+router.post("/reset-password", controller.resetPassword),
+router.get("/me", checkToken, unverifiedUser, controller.me);
 
 module.exports = router;

@@ -6,10 +6,9 @@ const express = require("express"),
 
 const Roles = {
   ADMIN: "admin",
-  MENTOR: "mentor",
 };
 
-router.post("/create-profiles", checkToken, controllers.create);
+router.post("/create-profile", checkToken, controllers.create);
 
 router.get(
   "/all-profiles",
