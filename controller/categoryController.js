@@ -15,8 +15,10 @@ module.exports = {
                 }
             })
 
+            if (!data) return res.status(500).json({ message: "Internal server error" })
+
             return res.status(201).json({
-                createdCategory
+                data
             })
 
         } catch (error) {
@@ -28,14 +30,16 @@ module.exports = {
         try {
             const data = await Category.findMany()
 
-            return res.status(200).json({
-                getCategory
-            })
-        }catch (error) {
+            if (!data) return res.status(403).json({ message: "Not found" })
+
+            return res.status(200).json({ data })
+
+        } catch (error) {
             next(error)
         }
-        
+
     },
+
     getById: async (req, res, next) => {
         try {
 
@@ -74,16 +78,17 @@ module.exports = {
             })
 
             return res.status(200).json({
-                getCategoryById
+                data
             })
-            
+
         } catch (error) {
             next(error)
         }
     },
-    update: async (req, res, next) => {
+
+    destroy: async (req, res, next) => {
         try {
-            const updatedCategory = await category.update({
+            let data = await Category.findUnique({
                 where: {
                     id: parseInt(req.params.id)
                 }
@@ -97,8 +102,8 @@ module.exports = {
                 }
             })
 
-            return res.status(204).json()
-            
+            return res.status(200).json({ message: "Delete success", data })
+
         } catch (error) {
             next(error)
         }

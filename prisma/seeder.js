@@ -1,18 +1,19 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const {
-  fakeUser,
+
+
+const { fakeUser,
   fakeProfile,
   fakeCategory,
   fakeCourse,
-  // fakeDetailTransaction,
+  fakeDetailTransaction,
   fakePaymentMethod,
   fakeNotification,
-  // fakeReview,
-  getUniqueNumber,
-} = require("./fake-data");
+  fakeReview,
+  getUniqueNumber } = require('./fake-data');
+
 
 async function seed() {
   // Seeder untuk User
@@ -29,7 +30,7 @@ async function seed() {
       data: {
         ...fakeProfile(),
         userId: user[i].id,
-      },
+      }
     });
   }
 
@@ -57,6 +58,7 @@ async function seed() {
       data: {
         ...fakeCourse(),
         categoryId: getUniqueNumber(category),
+        userId: getUniqueNumber(user)
       },
     });
   }
@@ -68,42 +70,43 @@ async function seed() {
     });
   }
 
-  // // Seeder untuk Transaction
-  // for (let i = 0; i < 10; i++) {
-  //   await prisma.transaction.create({
-  //     data: {
-  //       userId: getUniqueNumber(user)
-  //     },
-  //   });
-  // }
+  // Seeder untuk Transaction
+  for (let i = 0; i < 10; i++) {
+    await prisma.transaction.create({
+      data: {
+        userId: getUniqueNumber(user)
+      },
+    });
+  }
+
 
   // Seeder untuk DetailTransaction
-  const paymentMethod = await prisma.paymentMethod.findMany();
-  const course = await prisma.paymentMethod.findMany();
-  const transaction = await prisma.transaction.findMany();
+  const paymentMethod = await prisma.paymentMethod.findMany()
+  const course = await prisma.paymentMethod.findMany()
+  const transaction = await prisma.transaction.findMany()
   for (let i = 0; i < 10; i++) {
     await prisma.detailTransaction.create({
       data: {
         courseId: getUniqueNumber(course),
         transactionId: getUniqueNumber(transaction),
         paymentMethodId: getUniqueNumber(paymentMethod),
-        ...fakeDetailTransaction(),
+        ...fakeDetailTransaction()
       },
     });
   }
 
-  // // Seeder untuk Review
-  // for (let i = 0; i < 10; i++) {
-  //   await prisma.review.create({
-  //     data: {
-  //       ...fakeReview(),
-  //       userId: getUniqueNumber(user),
-  //       courseId: getUniqueNumber(course)
-  //     },
-  //   });
-  // }
+  // Seeder untuk Review
+  for (let i = 0; i < 10; i++) {
+    await prisma.review.create({
+      data: {
+        ...fakeReview(),
+        userId: getUniqueNumber(user),
+        courseId: getUniqueNumber(course)
+      },
+    });
+  }
 
-  console.log("Seeder selesai.");
+  console.log('Seeder selesai.');
   await prisma.$disconnect();
 }
 

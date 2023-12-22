@@ -1,12 +1,12 @@
-
 const express = require('express'),
     router = express.Router(),
-    checkToken = require('../middleware/checkToken'),
     controller = require('../controller/courseController')
 
-router.post('/create', checkToken, controller.createCourse)
+router.post('/create', controller.createCourse)
 router.get('/', controller.getAllCourse)
-router.get('/:id', controller.getCourseById)
-router.put('/:id', checkToken, controller.updateCourseById)
-router.delete('/:id', checkToken, controller.deleteCourseById)
+router.get('/search', controller.searchCourse)
+router.get('/getBy/:id', controller.getCourseById)
+router.get('/pagination', controller.paginationCourse)
+router.put('/:id', controller.updateCourseById)
+router.delete('/:id', controller.deleteCourseById)
 module.exports = router

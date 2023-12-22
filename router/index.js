@@ -20,4 +20,4 @@ router.use('/review', reviewRouter);
 router.use('/transaction', transactionRouter);
 router.use('/payment-method', transactionRouter);
 
-module.exports = router;
+module.exports = router

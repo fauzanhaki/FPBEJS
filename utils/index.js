@@ -18,13 +18,13 @@ const cryptPassword = (password) => {
     }
 };
 
-const verifyHashed = async (unhashed, hashed) => {
-  try {
-    const match = await bcrypt.compare(unhashed, hashed);
-    return match;
-  } catch (error) {
-    return false;
-  }
+const verifyHashed = (unhashed, hashed) => {
+    try {
+          bcrypt.compareSync(unhashed, hashed);
+        return true;
+    } catch (error) {
+        return error; 
+    }
 };
 
 const encryptEmail = async (password) => {
@@ -33,11 +33,11 @@ const encryptEmail = async (password) => {
         const salt = await bcrypt.genSalt(saltRounds);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-    const base64EncodedHash = Buffer.from(hashedPassword).toString("base64");
-    return base64EncodedHash;
-  } catch (error) {
-    throw new Error("Password encryption failed");
-  }
+        const base64EncodedHash = Buffer.from(hashedPassword).toString('base64');
+        return base64EncodedHash;
+    } catch (error) {
+        throw new Error('Password encryption failed');
+    }
 };
 
 function generateOTP() {
