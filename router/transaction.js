@@ -9,10 +9,10 @@ const Roles = {
   MENTOR: "mentor",
 };
 
-router.post("/transaction", checkToken, controllers.create);
+router.post("/create", checkToken, controllers.create);
 
 router.get(
-  "/all-transaction",
+  "/all-transactions",
   checkToken,
   checkRole.authPage([Roles.ADMIN]),
   controllers.getAll

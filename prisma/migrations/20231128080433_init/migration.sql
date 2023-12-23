@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "roles" AS ENUM ('user', 'admin', 'mentor');
+CREATE TYPE "roles" AS ENUM ('user', 'admin');
 
 -- CreateEnum
 CREATE TYPE "levels" AS ENUM ('beginner', 'intermediate', 'advanced');
@@ -10,8 +10,8 @@ CREATE TABLE "users" (
     "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "reset_password_token" TEXT,
-    "verification_token" TEXT,
+    "reset_password_token" TEXT NOT NULL,
+    "verification_token" TEXT NOT NULL,
     "role" "roles" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -23,12 +23,12 @@ CREATE TABLE "users" (
 CREATE TABLE "profiles" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "phone" TEXT,
-    "picture" TEXT,
-    "city" TEXT,
-    "province" TEXT,
-    "country" TEXT,
-    "user_id" INTEGER NOT NULL,
+    "no_telp" TEXT NOT NULL,
+    "profile_picture" TEXT NOT NULL,
+    "city" TEXT NOT NULL,
+    "province" TEXT NOT NULL,
+    "country" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -65,12 +65,21 @@ CREATE TABLE "courses" (
     "category_id" INTEGER NOT NULL,
     "level" "levels" NOT NULL,
     "price" INTEGER NOT NULL,
-    "description" TEXT,
-    "video_url" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "courses_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "transactions" (
+    "id" SERIAL NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -84,50 +93,39 @@ CREATE TABLE "payment_method" (
 );
 
 -- CreateTable
-CREATE TABLE "transactions" (
+CREATE TABLE "detail_transactions" (
     "id" SERIAL NOT NULL,
-    "user_id" INTEGER NOT NULL,
     "course_id" INTEGER NOT NULL,
+    "transaction_id" INTEGER NOT NULL,
     "payment_method_id" INTEGER NOT NULL,
-    "total_harga" DOUBLE PRECISION NOT NULL,
-    "paymentStatus" BOOLEAN NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "payment_status" BOOLEAN NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "detail_transactions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "reviews" (
     "id" SERIAL NOT NULL,
-    "nilai" DOUBLE PRECISION,
-    "feedback" TEXT,
-    "userId" INTEGER NOT NULL,
-    "courseId" INTEGER NOT NULL,
-    "rantingId" INTEGER,
+    "rating" TEXT NOT NULL,
+    "feedback" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "rantings" (
-    "id" INTEGER NOT NULL,
-    "total_ranting" DOUBLE PRECISION,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "user_id" INTEGER NOT NULL,
+    "course_id" INTEGER NOT NULL,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "rantings_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "profiles_user_id_key" ON "profiles"("user_id");
+CREATE UNIQUE INDEX "profiles_userId_key" ON "profiles"("userId");
 
 -- AddForeignKey
-ALTER TABLE "profiles" ADD CONSTRAINT "profiles_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "profiles" ADD CONSTRAINT "profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -139,16 +137,16 @@ ALTER TABLE "courses" ADD CONSTRAINT "courses_category_id_fkey" FOREIGN KEY ("ca
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "transactions" ADD CONSTRAINT "transactions_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "courses"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "detail_transactions" ADD CONSTRAINT "detail_transactions_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "courses"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "transactions" ADD CONSTRAINT "transactions_payment_method_id_fkey" FOREIGN KEY ("payment_method_id") REFERENCES "payment_method"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "detail_transactions" ADD CONSTRAINT "detail_transactions_transaction_id_fkey" FOREIGN KEY ("transaction_id") REFERENCES "transactions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "reviews" ADD CONSTRAINT "reviews_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "detail_transactions" ADD CONSTRAINT "detail_transactions_payment_method_id_fkey" FOREIGN KEY ("payment_method_id") REFERENCES "payment_method"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "reviews" ADD CONSTRAINT "reviews_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "courses"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "reviews" ADD CONSTRAINT "reviews_rantingId_fkey" FOREIGN KEY ("rantingId") REFERENCES "rantings"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_course_id_fkey" FOREIGN KEY ("course_id") REFERENCES "courses"("id") ON DELETE CASCADE ON UPDATE CASCADE;

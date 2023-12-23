@@ -9,16 +9,16 @@ const Roles = {
   MENTOR: "mentor",
 };
 
-router.post("/review", checkToken, controllers.createReview);
+router.post("/create-review", checkToken, controllers.createReview);
 
-router.get("/allReview", controllers.getAllReview);
+router.get("/all-reviews", controllers.getAllReview);
 
-router.get("/reviews/:id", controllers.getById);
+router.get("/review-course/:id", controllers.getById);
+router.put("/update-review/:id", checkToken, controllers.updateReview);
 
 router.delete(
   "/delete-review/:id",
   checkToken,
-  checkRole.authPage([Roles.ADMIN]),
   controllers.destroy
 );
 

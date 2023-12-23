@@ -1,9 +1,9 @@
-const { Transaction, User, Course, PaymentMethod } = require("../models");
+const { Transaction, User, Course, PaymentMethod, DetailTransaction, Category } = require("../models");
 
 module.exports = {
   create: async (req, res) => {
     try {
-      const { courseId, paymentMethodId } = req.body;
+      const { courseId, paymentMethodId, paymentStatus } = req.body;
       const userIdFromToken = res.user.id;
 
       const existingUser = await User.findUnique({
@@ -18,7 +18,7 @@ module.exports = {
 
       const existingCourse = await Course.findUnique({
         where: {
-          id: courseId,
+          id: parseInt(courseId),
         },
       });
 
@@ -28,7 +28,7 @@ module.exports = {
 
       const existingPayment = await PaymentMethod.findUnique({
         where: {
-          id: paymentMethodId,
+          id: parseInt(paymentMethodId),
         },
       });
 
@@ -36,28 +36,23 @@ module.exports = {
         return res.status(404).json({ message: "Payment Method Not Found" });
       }
 
-      const successfulPayment = true;
-      const harga = parseFloat(existingCourse.price);
 
-      const transaction = await Transaction.create({
+      const data = await Transaction.create({
         data: {
-          user: {
-            connect: { id: userIdFromToken },
-          },
-          course: {
-            connect: { id: courseId },
-          },
-          paymentMethod: {
-            connect: { id: paymentMethodId },
-          },
-          totalHarga: harga,
-          paymentStatus: successfulPayment,
-        },
-      });
+          userId: existingUser.id,
+          detailTransaction: {
+            create: {
+              courseId: parseInt(courseId),
+              paymentMethodId: parseInt(paymentMethodId),
+              paymentStatus: Boolean(paymentStatus)
+            }
+          }
+        }
+      })
 
       return res.status(200).json({
         message: "Created Transaction successfully",
-        transaction,
+        data,
       });
     } catch (error) {
       console.error(error);
@@ -67,31 +62,65 @@ module.exports = {
 
   getAll: async (req, res) => {
     try {
-      const allTransaction = await Transaction.findMany({
+      const transaction = await Transaction.findMany({
         select: {
           id: true,
-          totalHarga: true,
-          paymentStatus: true,
+          detailTransaction: true,
           user: {
             select: {
-              username: true,
-            },
-          },
-          course: {
-            select: {
-              name: true,
-            },
-          },
-          paymentMethod: {
-            select: {
-              name: true,
-            },
-          },
+              username: true
+            }
+          }
         },
       });
+    
+      if (!transaction || transaction.length === 0) {
+        return res.status(404).json({ message: 'No transactions found' });
+      }
+    
+      const data = await Promise.all(
+        transaction.map(async (transaction) => {
+          const detailTransaction = await DetailTransaction.findUnique({
+            where: { id: parseInt(transaction.id) },
+          });
+
+          const course = await Course.findUnique({
+            where: {id: detailTransaction.courseId}
+          })
+
+          const category = await Category.findUnique({
+            where: {id: course.categoryId}
+          })
+
+          const paymentMethod = await PaymentMethod.findUnique({
+            where:{id: detailTransaction.paymentMethodId}
+          })
+
+          if(!detailTransaction.paymentStatus) {
+            detailTransaction.createdAt = "-"
+            detailTransaction.updatedAt = "-"
+            paymentMethod.name = "-"
+          }
+    
+          return {
+            id: transaction.id,
+            username: transaction.user.username,
+            course: course.name,
+            courseCode: course.courseCode,
+            courseLevel: course.level,
+            category: category.name,
+            price: course.price,
+            paymentStatus: detailTransaction.paymentStatus,
+            paymentMethod: paymentMethod.name,
+            createdAt: detailTransaction.createdAt,
+            updatedAt: detailTransaction.updatedAt
+          };
+        })
+      );
+    
       return res.status(200).json({
         message: "All Transaction retrieved successfully",
-        allTransaction,
+        data,
       });
     } catch (error) {
       console.log(error);

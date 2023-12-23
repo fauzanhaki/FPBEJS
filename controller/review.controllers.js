@@ -3,10 +3,10 @@ const { Ranting, Review, User, Course } = require("../models");
 module.exports = {
   createReview: async (req, res) => {
     try {
-      let { nilai, feedback, courseId, rantingId } = req.body;
+      let { rating, feedback, courseId } = req.body;
 
       courseId = parseInt(courseId);
-      nilai = parseInt(nilai);
+      rating = parseInt(rating);
 
       const userIdFromToken = res.user.id;
 
@@ -30,77 +30,24 @@ module.exports = {
         return res.status(404).json({ message: "Course Not Found" });
       }
 
-      if (nilai < 1 || nilai > 5) {
+      if (rating < 1 || rating > 5) {
         return res
           .status(400)
           .json({ message: "Rating should be between 1 and 5" });
       }
 
-      rantingId = rantingId || courseId;
-
-      if (!rantingId) {
-        rantingId = courseId;
-      }
-
-      let ranting = await Ranting.findUnique({
-        where: {
-          id: rantingId,
-        },
-      });
-
-      if (!ranting) {
-        ranting = await Ranting.create({
-          data: {
-            id: rantingId,
-            totalRanting: nilai,
-          },
-        });
-      } else {
-        ranting = await Ranting.update({
-          where: {
-            id: rantingId,
-          },
-          data: {
-            totalRanting: ranting.totalRanting + nilai,
-          },
-        });
-      }
-
-      const review = await Review.create({
+      const data = await Review.create({
         data: {
-          nilai: nilai,
+          rating: rating,
           feedback: feedback,
           userId: userIdFromToken,
           courseId: courseId,
-          rantingId: ranting.id,
-        },
-      });
-
-      const existingReviews = await Review.findMany({
-        where: {
-          rantingId: ranting.id,
-        },
-      });
-
-      const totRanting = existingReviews.reduce(
-        (sum, review) => sum + (review.nilai || 0),
-        0
-      );
-      const averageRanting =
-        existingReviews.length > 0 ? totRanting / existingReviews.length : 0;
-
-      await Ranting.update({
-        where: {
-          id: ranting.id,
-        },
-        data: {
-          totalRanting: averageRanting,
         },
       });
 
       return res
         .status(200)
-        .json({ message: "Review created successfully", review });
+        .json({ message: "Review created successfully", data });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal Server Error" });
@@ -109,10 +56,10 @@ module.exports = {
 
   getAllReview: async (req, res) => {
     try {
-      const allReviews = await Review.findMany({
+      const data = await Review.findMany({
         select: {
           id: true,
-          nilai: true,
+          rating: true,
           feedback: true,
           user: {
             select: {
@@ -124,17 +71,13 @@ module.exports = {
               name: true,
             },
           },
-          ranting: {
-            select: {
-              totalRanting: true,
-            },
-          },
+          createdAt: true,
+          updatedAt: true
         },
       });
-
       return res
         .status(200)
-        .json({ message: "All Review retrived successfully", allReviews });
+        .json({ message: "All Review retrived successfully", data });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal Server Error" });
@@ -148,7 +91,7 @@ module.exports = {
         where: { courseId: Number(courseId) },
         select: {
           id: true,
-          nilai: true,
+          rating: true,
           feedback: true,
           user: {
             select: {
@@ -160,11 +103,8 @@ module.exports = {
               name: true,
             },
           },
-          ranting: {
-            select: {
-              totalRanting: true,
-            },
-          },
+          createdAt: true,
+          updatedAt: true
         },
       });
       if (!data || data.length === 0)
@@ -178,15 +118,51 @@ module.exports = {
     }
   },
 
+  updateReview: async (req, res, next) => {
+    try {
+      const userId = res.user.id;
+      const id = req.params.id;
+      const { courseId, rating, feedback } = req.body;
+      const user = await User.findFirst({
+        where: { id: parseInt(userId) }
+      });
+
+      if (!user || user == []) return res.status(404).json({ message: "User not found" });
+
+      const course = await Course.findFirst({
+        where: { id: parseInt(courseId) }
+      })
+
+      if (!course || course == []) return res.status(404).json({ message: "Course not found" })
+
+      const data = await Review.update({
+        where: { id: parseInt(id) },
+        data: {
+          rating: parseInt(rating),
+          feedback: feedback,
+          userId: userId,
+          courseId: parseInt(courseId)
+        }
+      })
+
+      if (!data || data == []) return res.status(500).json({ message: "Internal server error" })
+
+      return res.status(200).json({ message: "Update success", data })
+    }
+    catch (error) {
+      next(error)
+    }
+  },
+
   destroy: async (req, res) => {
     try {
-      const existingReviews = await Review.findUnique({
+      const data = await Review.findUnique({
         where: {
           id: parseInt(req.params.id),
         },
       });
 
-      if (!existingReviews) {
+      if (!data) {
         return res.status(404).json({ message: "Review not found" });
       }
 
@@ -197,7 +173,7 @@ module.exports = {
       });
       return res
         .status(200)
-        .json({ message: "Review delete successfully", existingReviews });
+        .json({ message: "Review delete successfully", data });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal Server Error" });

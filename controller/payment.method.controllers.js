@@ -4,16 +4,15 @@ module.exports = {
   create: async (req, res) => {
     try {
       const { name } = req.body;
-      const create = await PaymentMethod.create({
+      const data = await PaymentMethod.create({
         data: {
           name: name,
         },
       });
       return res
         .status(200)
-        .json({ message: "Payment Method created successfully", create });
+        .json({ message: "Payment Method created successfully", data });
     } catch (error) {
-      console.error(error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },
@@ -44,7 +43,7 @@ module.exports = {
         return res.status(404).json({ message: "Payment Method not found" });
       }
 
-      const update = await PaymentMethod.update({
+      const data = await PaymentMethod.update({
         where: {
           id: parseInt(req.params.id),
         },
@@ -54,22 +53,21 @@ module.exports = {
       });
       return res
         .status(200)
-        .json({ message: "Payment Method update successfully", update });
+        .json({ message: "Payment Method update successfully", data });
     } catch (error) {
-      console.error(error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },
 
   destroy: async (req, res) => {
     try {
-      const existingPayment = await PaymentMethod.findUnique({
+      const data = await PaymentMethod.findUnique({
         where: {
           id: parseInt(req.params.id),
         },
       });
 
-      if (!existingPayment) {
+      if (!data) {
         return res.status(404).json({ message: "Payment Method not found" });
       }
 
@@ -80,10 +78,9 @@ module.exports = {
       });
       return res.status(200).json({
         message: "Payment Method delete successfully",
-        existingPayment,
+        data,
       });
     } catch (error) {
-      console.error(error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },
