@@ -91,11 +91,27 @@ model Course {
   description String?
   videoUrl    String   @map("video_url")
   userId      Int      @map("user_id")
+  duration    String
+  about       String?  @db.Text
+  user        String
   review      Review[]
+  module      Module[]
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("courses")
+}
+
+model Module {
+  id        Int      @id @default(autoincrement())
+  courseId  Int
+  name      String?
+  url       String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("modules")
 }
 
 model Transaction {

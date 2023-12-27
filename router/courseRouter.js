@@ -1,6 +1,6 @@
 const express = require('express'),
     router = express.Router(),
-    controller = require('../controller/courseController')
+    controller = require('../controller/courseController');
 
 router.post('/create', controller.createCourse)
 router.get('/', controller.getAllCourse)

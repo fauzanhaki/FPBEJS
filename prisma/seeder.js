@@ -12,6 +12,7 @@ const { fakeUser,
   fakePaymentMethod,
   fakeNotification,
   fakeReview,
+  fakeModule,
   getUniqueNumber } = require('./fake-data');
 
 
@@ -63,6 +64,16 @@ async function seed() {
     });
   }
 
+  const course = await prisma.course.findMany()
+  for (let i = 0; i < 10; i++) {
+    await prisma.module.create({
+      data: {
+        ...fakeModule(),
+        courseId: getUniqueNumber(course)
+      }
+    })    
+  }
+
   // Seeder untuk PaymentMethod
   for (let i = 0; i < 5; i++) {
     await prisma.paymentMethod.create({
@@ -82,7 +93,6 @@ async function seed() {
 
   // Seeder untuk DetailTransaction
   const paymentMethod = await prisma.paymentMethod.findMany()
-  const course = await prisma.paymentMethod.findMany()
   const transaction = await prisma.transaction.findMany()
   for (let i = 0; i < 10; i++) {
     await prisma.detailTransaction.create({

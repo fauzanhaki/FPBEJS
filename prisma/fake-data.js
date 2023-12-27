@@ -70,7 +70,17 @@ function fakeCourse() {
     price: faker.number.int({ min: 99000, max: 1000000 }),
     description: faker.lorem.words(5),
     videoUrl: faker.lorem.words(5),
+    duration: "45 menit",
+    about: faker.lorem.words(50),
+    user: faker.lorem.words(5)
   };
+}
+
+function fakeModule() {
+  return {
+    name: faker.person.zodiacSign(),
+    url: faker.lorem.words(5)
+  }
 }
 
 const paymentMethod = ["Dana", "OVO", "Gopay", "Saku", "Link Aja"];
@@ -118,5 +128,6 @@ module.exports = {
   fakePaymentMethod,
   fakeNotification,
   fakeReview,
+  fakeModule,
   getUniqueNumber
 }

@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-
+const checkRating = require('../utils/check.rating')
 module.exports = {
   createCourse: async (req, res, next) => {
     try {
@@ -58,15 +58,23 @@ module.exports = {
           userId: true,
           createdAt: true,
           updatedAt: true,
+          about: true,
+          duration: true,
+          review: {
+            select: {
+              rating: true
+            }
+          }
         },
       });
-    
+
       if (!courses || courses.length === 0) {
         return res.status(404).json({ message: 'No courses found' });
       }
-    
+
       const data = await Promise.all(
         courses.map(async (course) => {
+          const rating = checkRating(course);
           const user = await prisma.user.findUnique({
             where: { id: course.userId },
             select: {
@@ -77,14 +85,14 @@ module.exports = {
               },
             },
           });
-    
+
           const category = await prisma.category.findUnique({
             where: { id: course.categoryId },
             select: {
               name: true,
             },
           });
-    
+
           return {
             id: course.id,
             name: course.name,
@@ -96,17 +104,20 @@ module.exports = {
             description: course.description,
             videoUrl: course.videoUrl,
             mentor: user ? user.profile.name : null,
+            rating: rating,
+            duration: course.duration,
+            about: course.about,
             createdAt: course.createdAt,
             updatedAt: course.updatedAt,
           };
         })
       );
-    
+
       return res.status(200).json({ data });
     } catch (error) {
       next(error)
     }
-    
+
   },
 
   getCourseById: async (req, res, next) => {
@@ -127,12 +138,27 @@ module.exports = {
           userId: true,
           createdAt: true,
           updatedAt: true,
+          about: true,
+          duration: true,
+          review: {
+            select: {
+              rating: true
+            }
+          },
+          module: {
+            select: {
+              name: true,
+              url: true
+            }
+          }
         },
       });
 
       if (!course) {
         return res.status(404).json({ message: 'Course not found' });
       }
+
+      const rating = checkRating(course);
 
       const user = await prisma.user.findFirst({
         where: { id: Number(course.userId) },
@@ -167,6 +193,10 @@ module.exports = {
         description: course.description,
         videoUrl: course.videoUrl,
         mentor: user.profile.name,
+        rating: rating,
+        about: course.about,
+        duration: course.duration,
+        module: course.module,
         createdAt: course.createdAt,
         updatedAt: course.updatedAt,
       };
@@ -179,19 +209,19 @@ module.exports = {
 
   searchCourse: async (req, res, next) => {
     try {
-      const { name } = req.query; 
-  
+      const { name } = req.query;
+
       const data = await prisma.course.findMany({
         where: {
           name: {
-            contains: name, 
-            mode: 'insensitive' 
+            contains: name,
+            mode: 'insensitive'
           }
         }
       });
 
-      if(!data || data.length == 0) return res.status(404).json({message: "Course not found"})
-  
+      if (!data || data.length == 0) return res.status(404).json({ message: "Course not found" })
+
       return res.status(200).json({ data });
     } catch (error) {
       next(error)
@@ -200,21 +230,21 @@ module.exports = {
 
   paginationCourse: async (req, res, next) => {
     try {
-      const { page=1, limit=10 } = req.query; 
-  
-      const pageNumber = parseInt(page); 
-      const itemsLimit = parseInt(limit); 
-  
-      const skip = (pageNumber - 1) * itemsLimit; 
-      
+      const { page = 1, limit = 10 } = req.query;
+
+      const pageNumber = parseInt(page);
+      const itemsLimit = parseInt(limit);
+
+      const skip = (pageNumber - 1) * itemsLimit;
+
       const data = await prisma.course.findMany({
-        skip: skip, 
-        take: itemsLimit, 
-        orderBy: { id: 'asc' } 
+        skip: skip,
+        take: itemsLimit,
+        orderBy: { id: 'asc' }
       });
 
-      if(!data) return res.status(404).json({message: "Course not found"});
-  
+      if (!data) return res.status(404).json({ message: "Course not found" });
+
       return res.status(200).json({ data });
     } catch (error) {
       console.log(error);
