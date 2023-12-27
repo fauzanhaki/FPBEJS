@@ -6,8 +6,9 @@ const express = require('express'),
     userRouter = require('./userRouter'),
     profileRouter = require('./profile'),
     reviewRouter = require('./review'),
-    transactionRouter = require('./transaction');
-    paymentMethod = require('./payment.method')
+    transactionRouter = require('./transaction'),
+    paymentMethod = require('./payment.method'),
+    moduleRouter = require('./module.router')
     
     
 
@@ -18,6 +19,7 @@ router.use('/user', userRouter);
 router.use('/profile', profileRouter);
 router.use('/review', reviewRouter);
 router.use('/transaction', transactionRouter);
-router.use('/payment-method', transactionRouter);
+router.use('/payment-method', paymentMethod);
+router.use('/module', moduleRouter);
 
 module.exports = router
