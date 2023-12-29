@@ -19,12 +19,11 @@ const cryptPassword = (password) => {
 };
 
 const verifyHashed = (unhashed, hashed) => {
-    try {
-          bcrypt.compareSync(unhashed, hashed);
-        return true;
-    } catch (error) {
-        return error; 
-    }
+  try {
+    return bcrypt.compareSync(unhashed, hashed);
+  } catch (error) {
+    return false;
+  }
 };
 
 const encryptEmail = async (password) => {
