@@ -1,6 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const checkRating = require('../utils/check.rating')
+const { imageKit } = require('../utils/image.kit')
 module.exports = {
   createCourse: async (req, res, next) => {
     try {
@@ -21,6 +22,13 @@ module.exports = {
 
       if (existCourse) return res.status(500).json({ message: "Course already exist" });
 
+      const fileTostring = req.file.buffer.toString('base64');
+
+      const uploadFile = await imageKit.upload({
+        fileName: req.file.originalname,
+        file: fileTostring
+      });
+
       const data = await prisma.course.create({
         data: {
           name: req.body.name,
@@ -29,7 +37,9 @@ module.exports = {
           categoryId: Number(req.body.categoryId),
           level: req.body.level.toLowerCase().trim(),
           price: Number(req.body.price),
+          picture: uploadFile.url,
           description: req.body.description,
+          duration: req.body.duration,
           videoUrl: req.body.videoUrl,
           userId: Number(userId)
         }
@@ -53,6 +63,7 @@ module.exports = {
           categoryId: true,
           level: true,
           price: true,
+          picture: true,
           description: true,
           videoUrl: true,
           userId: true,
@@ -101,6 +112,7 @@ module.exports = {
             category: category ? category.name : null,
             level: course.level,
             price: course.price,
+            picture: course.picture,
             description: course.description,
             videoUrl: course.videoUrl,
             mentor: user ? user.profile.name : null,
@@ -133,6 +145,7 @@ module.exports = {
           categoryId: true,
           level: true,
           price: true,
+          picture: true,
           description: true,
           videoUrl: true,
           userId: true,
@@ -190,6 +203,7 @@ module.exports = {
         category: category.name,
         level: course.level,
         price: course.price,
+        picture: course.picture,
         description: course.description,
         videoUrl: course.videoUrl,
         mentor: user.profile.name,

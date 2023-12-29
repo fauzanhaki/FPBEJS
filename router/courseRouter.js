@@ -1,8 +1,9 @@
 const express = require('express'),
     router = express.Router(),
-    controller = require('../controller/courseController');
+    controller = require('../controller/courseController'),
+    multer = require('multer')();
 
-router.post('/create', controller.createCourse)
+router.post('/create', multer.single('image'), controller.createCourse)
 router.get('/', controller.getAllCourse)
 router.get('/search', controller.searchCourse)
 router.get('/getBy/:id', controller.getCourseById)

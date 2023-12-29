@@ -1035,6 +1035,7 @@
                         "categoryId": {"type": "string"},
                         "level": {"type": "string"},
                         "price": {"type": "integer"},
+                        "picture": {"type": "string"},
                         "description": {"type": "string"},
                         "videoUrl": {"type": "string"},
                         "mentor": {"type":"string"},
@@ -1072,9 +1073,13 @@
                         "categoryId": {"type": "string"},
                         "level": {"type": "string"},
                         "price": {"type": "integer"},
+                        "picture": {"type": "string"},
                         "description": {"type": "string"},
                         "videoUrl": {"type": "string"},
                         "mentor": {"type":"string"},
+                        "rating": {"type":"string"},
+                        "duration": {"type":"string"},
+                        "about": {"type":"string"},
                         "createdAt": {"type":"string"},
                         "updatedAt": {"type": "string"}
                       }
@@ -1124,6 +1129,9 @@
                         "description": {"type": "string"},
                         "videoUrl": {"type": "string"},
                         "mentor": {"type":"string"},
+                        "rating": {"type":"string"},
+                        "duration": {"type":"string"},
+                        "about": {"type":"string"},
                         "createdAt": {"type":"string"},
                         "updatedAt": {"type": "string"}
                       }

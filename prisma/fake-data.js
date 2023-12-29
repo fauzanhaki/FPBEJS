@@ -72,7 +72,6 @@ function fakeCourse() {
     videoUrl: faker.lorem.words(5),
     duration: "45 menit",
     about: faker.lorem.words(50),
-    user: faker.lorem.words(5)
   };
 }
 

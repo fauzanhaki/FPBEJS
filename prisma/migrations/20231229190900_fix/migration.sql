@@ -3,7 +3,6 @@
 
   - You are about to drop the column `date` on the `reviews` table. All the data in the column will be lost.
   - Added the required column `duration` to the `courses` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `user` to the `courses` table without a default value. This is not possible if the table is not empty.
   - Changed the type of `rating` on the `reviews` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
   - Added the required column `total` to the `transactions` table without a default value. This is not possible if the table is not empty.
 
@@ -14,7 +13,7 @@ ALTER TABLE "transactions" DROP CONSTRAINT "transactions_user_id_fkey";
 -- AlterTable
 ALTER TABLE "courses" ADD COLUMN     "about" TEXT,
 ADD COLUMN     "duration" TEXT NOT NULL,
-ADD COLUMN     "user" TEXT NOT NULL;
+ADD COLUMN     "picture" TEXT;
 
 -- AlterTable
 ALTER TABLE "detail_transactions" ADD COLUMN     "card_holder_name" TEXT,
