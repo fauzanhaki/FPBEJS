@@ -1,5 +1,3 @@
 node_modules
 # Keep environment variables out of version control
 .env
-prisma/fake-data.js
-prisma/seeder.js
