@@ -20,7 +20,8 @@ const cryptPassword = (password) => {
 
 const verifyHashed = (unhashed, hashed) => {
   try {
-    return bcrypt.compareSync(unhashed, hashed);
+    const verify = bcrypt.compareSync(unhashed, hashed);
+    return verify;
   } catch (error) {
     return false;
   }
