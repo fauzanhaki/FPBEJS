@@ -29,7 +29,6 @@ model User {
   profile            Profile?
   notification       Notification[]
   review             Review[]
-  transaction        Transaction[]
   createdAt          DateTime       @default(now()) @map("created_at")
   updatedAt          DateTime       @updatedAt @map("updated_at")
 
@@ -88,6 +87,7 @@ model Course {
   categoryId  Int      @map("category_id")
   level       Level
   price       Int
+  picture     String?
   description String?
   videoUrl    String   @map("video_url")
   userId      Int      @map("user_id")
@@ -117,8 +117,8 @@ model Module {
 model Transaction {
   id                Int                 @id @default(autoincrement())
   userId            Int                 @map("user_id")
+  total             Int
   detailTransaction DetailTransaction[]
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
 
@@ -140,6 +140,10 @@ model DetailTransaction {
   transactionId   Int         @map("transaction_id")
   paymentMethodId Int         @map("payment_method_id")
   paymentStatus   Boolean     @map("payment_status")
+  cardNumber      String?     @map("card_number")
+  cardHolderName  String?     @map("card_holder_name")
+  cvv             String?
+  expiryDate      String?     @map("expiry_date")
   transaction     Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt

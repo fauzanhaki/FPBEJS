@@ -105,9 +105,16 @@ function fakePaymentMethod() {
   };
 }
 
+function fakeTransaction() {
+  return {
+    total: faker.number.int(5)
+  }
+}
+
 function fakeDetailTransaction() {
   return {
     paymentStatus: faker.datatype.boolean(),
+   
   };
 }
 
@@ -124,6 +131,7 @@ module.exports = {
   fakeProfile,
   fakeCategory,
   fakeCourse,
+  fakeTransaction,
   fakeDetailTransaction,
   fakePaymentMethod,
   fakeNotification,

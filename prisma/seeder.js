@@ -8,6 +8,7 @@ const { fakeUser,
   fakeProfile,
   fakeCategory,
   fakeCourse,
+  fakeTransaction,
   fakeDetailTransaction,
   fakePaymentMethod,
   fakeNotification,
@@ -85,7 +86,8 @@ async function seed() {
   for (let i = 0; i < 10; i++) {
     await prisma.transaction.create({
       data: {
-        userId: getUniqueNumber(user)
+        userId: getUniqueNumber(user),
+        ...fakeTransaction()
       },
     });
   }

@@ -3,7 +3,7 @@ const { Transaction, User, Course, PaymentMethod, DetailTransaction, Category } 
 module.exports = {
   create: async (req, res) => {
     try {
-      const { courseId, paymentMethodId, paymentStatus } = req.body;
+      const { courseId, paymentStatus = true, total, paymentMethod, cardNumber, cardHolderName, cvv, expiryDate } = req.body;
       const userIdFromToken = res.user.id;
 
       const existingUser = await User.findUnique({
@@ -26,9 +26,9 @@ module.exports = {
         return res.status(404).json({ message: "Course Not Found" });
       }
 
-      const existingPayment = await PaymentMethod.findUnique({
+      const existingPayment = await PaymentMethod.findFirst({
         where: {
-          id: parseInt(paymentMethodId),
+          name: paymentMethod
         },
       });
 
@@ -36,15 +36,40 @@ module.exports = {
         return res.status(404).json({ message: "Payment Method Not Found" });
       }
 
+      if (existingPayment.name == paymentMethod.toLowerCase()) {
+        const data = await Transaction.create({
+          data: {
+            userId: userIdFromToken,
+            total: Number(total),
+            detailTransaction: {
+              create: {
+                courseId: parseInt(courseId),
+                paymentMethodId: existingPayment.id,
+                cardNumber: cardNumber,
+                cardHolderName: cardHolderName,
+                paymentStatus: paymentStatus,
+                cvv: cvv,
+                // expiryDate: new Date(expiryDate),
+                expiryDate: expiryDate,
+              }
+            }
+          }
+        })
+        return res.status(200).json({
+          message: "Created Transaction successfully",
+          data,
+        });
+      }
 
       const data = await Transaction.create({
         data: {
           userId: existingUser.id,
+          total: Number(total),
           detailTransaction: {
             create: {
               courseId: parseInt(courseId),
-              paymentMethodId: parseInt(paymentMethodId),
-              paymentStatus: Boolean(paymentStatus)
+              paymentMethodId: existingPayment.id,
+              paymentStatus: Boolean(paymentStatus),
             }
           }
         }
@@ -60,56 +85,52 @@ module.exports = {
     }
   },
 
+
   getAll: async (req, res) => {
     try {
-      const transaction = await Transaction.findMany({
-        select: {
-          id: true,
-          detailTransaction: true,
-          user: {
-            select: {
-              username: true
-            }
-          }
-        },
-      });
-    
+      const transaction = await Transaction.findMany()
+
       if (!transaction || transaction.length === 0) {
         return res.status(404).json({ message: 'No transactions found' });
       }
-    
+
       const data = await Promise.all(
         transaction.map(async (transaction) => {
+          const user = await User.findUnique({
+            where: {id: transaction.userId}
+          })
+
           const detailTransaction = await DetailTransaction.findUnique({
             where: { id: parseInt(transaction.id) },
           });
 
           const course = await Course.findUnique({
-            where: {id: detailTransaction.courseId}
+            where: { id: detailTransaction.courseId }
           })
 
           const category = await Category.findUnique({
-            where: {id: course.categoryId}
+            where: { id: course.categoryId }
           })
 
           const paymentMethod = await PaymentMethod.findUnique({
-            where:{id: detailTransaction.paymentMethodId}
+            where: { id: detailTransaction.paymentMethodId }
           })
 
-          if(!detailTransaction.paymentStatus) {
+          if (!detailTransaction.paymentStatus) {
             detailTransaction.createdAt = "-"
             detailTransaction.updatedAt = "-"
             paymentMethod.name = "-"
           }
-    
+
           return {
             id: transaction.id,
-            username: transaction.user.username,
+            username: user.username,
             course: course.name,
             courseCode: course.courseCode,
             courseLevel: course.level,
             category: category.name,
             price: course.price,
+            total: transaction.total,
             paymentStatus: detailTransaction.paymentStatus,
             paymentMethod: paymentMethod.name,
             createdAt: detailTransaction.createdAt,
@@ -117,7 +138,7 @@ module.exports = {
           };
         })
       );
-    
+
       return res.status(200).json({
         message: "All Transaction retrieved successfully",
         data,
@@ -128,45 +149,65 @@ module.exports = {
     }
   },
 
-  getById: async (req, res) => {
+  myTransaction: async (req, res) => {
     try {
-      const userId = res.user.id;
+      const userId = Number(res.user.id);
+      const transaction = await Transaction.findFirst({
+        where: {userId: userId}
+      })
 
-      const transactions = await Transaction.findMany({
-        where: {
-          userId: userId,
-        },
-        select: {
-          id: true,
-          totalHarga: true,
-          paymentStatus: true,
-          user: {
-            select: {
-              username: true,
-            },
-          },
-          course: {
-            select: {
-              name: true,
-            },
-          },
-          paymentMethod: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      });
-
-      if (!transactions || transactions.length === 0) {
-        return res.status(404).json({ message: "No transactions found" });
+      if (!transaction || transaction.length === 0) {
+        return res.status(404).json({ message: 'No transactions found' });
       }
 
-      return res
-        .status(200)
-        .json({ message: "Transactions retrieved successfully", transactions });
+      
+          const user = await User.findUnique({
+            where: {id: userId}
+          })
+
+          const detailTransaction = await DetailTransaction.findUnique({
+            where: { id: parseInt(transaction.id) }
+          });
+
+          const course = await Course.findUnique({
+            where: { id: detailTransaction.courseId }
+          })
+
+          const category = await Category.findUnique({
+            where: { id: course.categoryId }
+          })
+
+          const paymentMethod = await PaymentMethod.findUnique({
+            where: { id: detailTransaction.paymentMethodId }
+          })
+
+          if (!detailTransaction.paymentStatus) {
+            detailTransaction.createdAt = "-"
+            detailTransaction.updatedAt = "-"
+            paymentMethod.name = "-"
+          }
+
+          const data =  {
+            id: transaction.id,
+            username: user.username,
+            course: course.name,
+            courseCode: course.courseCode,
+            courseLevel: course.level,
+            category: category.name,
+            price: course.price,
+            total: transaction.total,
+            paymentStatus: detailTransaction.paymentStatus,
+            paymentMethod: paymentMethod.name,
+            createdAt: detailTransaction.createdAt,
+            updatedAt: detailTransaction.updatedAt
+          };
+
+      return res.status(200).json({
+        message: "Get by id successfully",
+        data,
+      });
     } catch (error) {
-      console.error(error);
+      console.log(error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },

@@ -18,7 +18,7 @@ router.get(
   controllers.getAll
 );
 
-router.get("/my-transaction", checkToken, controllers.getById);
+router.get("/my-transaction", checkToken, controllers.myTransaction);
 
 router.delete(
   "/delete-transaction/:id",

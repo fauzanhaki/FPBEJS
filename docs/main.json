@@ -1505,10 +1505,13 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "userId": {"type": "number"},
                   "courseId": {"type": "number"},
-                  "paymentMethodId": {"type": "number"},
-                  "paymentStatus": {"type": "boolean"}
+                  "paymentMethod": {"type": "string"},
+                  "cardNumber": {"type": "string"},
+                  "cardHolderName": {"type": "string"},
+                  "cvv": {"type": "string"},
+                  "expiryDate": {"type": "string"},
+                  "total": {"type": "number"}
                 }
               }
             }
@@ -1526,6 +1529,7 @@
                       "properties": {
                         "id": {"type": "number"},
                         "userId": {"type": "number"},
+                        "total": {"type": "number"},
                         "createdAt": {"type": "string"},
                         "updatedAt": {"type": "string"}
                       }
@@ -1561,6 +1565,44 @@
                         "courseLevel": {"type": "string"},
                         "category": {"type": "string"},
                         "price": {"type": "number"},
+                        "paymentStatus": {"type": "string"},
+                        "paymentMethod": {"type": "string"},
+                        "createdAt": {"type": "string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transaction/my-transaction": {
+      "get": {
+        "tags": ["Transaction"],
+        "operationId": "get my transaction",
+        "summary": "get my transaction",
+        "description": "Don't forget to include the token in the Authorization Bearer.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "username": {"type": "string"},
+                        "course": {"type": "string"},
+                        "courseCode": {"type": "string"},
+                        "courseLevel": {"type": "string"},
+                        "category": {"type": "string"},
+                        "price": {"type": "number"},
+                        "total": {"type": "number"},
                         "paymentStatus": {"type": "string"},
                         "paymentMethod": {"type": "string"},
                         "createdAt": {"type": "string"},
