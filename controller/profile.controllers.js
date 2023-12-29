@@ -1,3 +1,5 @@
+const { verifyHashed, cryptPassword } = require("../utils");
+
 const { User, Profile } = require("../models"),
   { imageKit } = require("../utils/image.kit"),
   multer = require("multer"),
@@ -189,6 +191,42 @@ module.exports = {
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal Server Error" });
+    }
+  },
+
+  resetPassword: async (req, res, next) => {
+    try {
+      const userId = Number(res.user.id);
+      const {current_password, new_password, confirm_password} = req.body;
+      const existUser = await User.findUnique({
+        where: {id: userId}
+      })
+
+      if(!existUser || existUser == []) return res.status(404).json({message: "User not found"})
+
+      if (new_password !== confirm_password) {
+        return res.status(400).json({ message: "New password and confirm password do not match" });
+    }
+
+    const verifyPassword = await verifyHashed(
+        current_password,
+        existUser.password.toString()
+    );
+
+    if (verifyPassword) {
+        const newPassword = await cryptPassword(new_password);
+        await User.update({
+            where: {
+                id: existUser.id
+            },
+            data: {
+                password: newPassword,
+            }
+        });
+        return res.status(200).json({message:"Change password success"})
+      }
+    } catch (error) {
+      next(error)
     }
   },
 

@@ -695,6 +695,42 @@
         }
       }
     },
+    "/profile/reset-my-password": {
+      "put": {
+        "tags": ["Profile"],
+        "operationId": "reset password",
+        "summary": "Reset Password User",
+        "description": "For update password. Don't forget put token, cause if it's not, it won't work",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "current_password": {"type": "string"},
+                  "new_password": {"type": "string"},
+                  "confirmPassword": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/profile/delete-profile/{id}": {
       "delete": {
         "tags": ["Profile"],

@@ -19,6 +19,7 @@ router.get(
 router.get("/my-profile", checkToken, controllers.getById);
 
 router.put("/update-my-profile", checkToken, controllers.update);
+router.put("/reset-my-password", checkToken, controllers.resetPassword);
 
 router.delete(
   "/delete-profile/:id",
