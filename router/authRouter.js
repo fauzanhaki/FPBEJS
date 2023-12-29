@@ -11,6 +11,6 @@ router.post("/send-otp", checkToken, controller.sendOTP);
 router.post("/verify-otp", checkToken, unverifiedUser, controller.verifyOtp),
 router.post("/forgot-password", controller.forgotPassword),
 router.post("/reset-password", controller.resetPassword),
-router.get("/me", checkToken, unverifiedUser, controller.me);
+router.get("/me", checkToken, controller.me);
 
 module.exports = router;
