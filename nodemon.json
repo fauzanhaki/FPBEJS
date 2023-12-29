@@ -1,9 +1,0 @@
-{
-    "watch": ["."],
-    "ext": "js,yaml,yml,json",
-    "execMap": {
-      "yaml": "node_modules/yamljs/bin/yaml2json"
-    },
-    "ignore": ["**/*.test.js", "**/__tests__"]
-  }
-  
