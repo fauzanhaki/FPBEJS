@@ -24,13 +24,6 @@ module.exports = {
 
       if (existCourse) return res.status(500).json({ message: "Course already exist" });
 
-      const fileTostring = req.file.buffer.toString('base64');
-
-      const uploadFile = await imageKit.upload({
-        fileName: req.file.originalname,
-        file: fileTostring
-      });
-
       const data = await prisma.course.create({
         data: {
           name: req.body.name,
@@ -39,7 +32,6 @@ module.exports = {
           categoryId: Number(req.body.categoryId),
           level: req.body.level.toLowerCase().trim(),
           price: Number(req.body.price),
-          picture: uploadFile.url,
           description: req.body.description,
           duration: req.body.duration,
           videoUrl: req.body.videoUrl,
@@ -273,16 +265,30 @@ module.exports = {
 
       const courseId = req.params.id;
       const userId = req.body.userId;
-      const user = await prisma.user.findUnique({
-        where: { id: Number(userId) }
-      })
-      if (!user) return res.status(404).json({ message: "User mot found" })
+      console.log(userId);
 
       let data = await prisma.course.findUnique({
         where: { id: Number(courseId) }
       })
 
       if (!data) return res.status(404).json({ message: 'Course not found' })
+
+      const user = await prisma.user.findUnique({
+        where: { id: parseInt(userId) }
+      })
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" })
+      } else if(user.role != 'mentor') {
+        return res.status(403).json({message: "User must be mentor"})
+      }
+
+      const fileTostring = req.file.buffer.toString('base64');
+
+      const uploadFile = await imageKit.upload({
+        fileName: req.file.originalname,
+        file: fileTostring
+      });
 
       data = await prisma.course.update({
         where: { id: Number(courseId) },
@@ -293,6 +299,7 @@ module.exports = {
           categoryId: Number(req.body.categoryId),
           level: req.body.level.toLowerCase().trim(),
           price: Number(req.body.price),
+          picture: uploadFile.url,
           description: req.body.description,
           videoUrl: req.body.videoUrl,
           userId: Number(req.body.userId)
@@ -393,7 +400,7 @@ module.exports = {
           })
 
           const progress = checkProgress(progressUser, course.module)
-          
+
           return {
             id: course.id,
             name: course.name,

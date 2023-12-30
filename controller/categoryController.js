@@ -96,7 +96,7 @@ module.exports = {
 
             if (!data) return res.status(403).json({ message: "Not found" })
 
-            data = await category.delete({
+            data = await Category.delete({
                 where: {
                     id: parseInt(req.params.id)
                 }

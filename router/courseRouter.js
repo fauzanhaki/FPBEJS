@@ -10,6 +10,6 @@ router.get('/search', controller.searchCourse)
 router.get('/getBy/:id', controller.getCourseById)
 router.get('/pagination', controller.paginationCourse)
 router.get('/my-course', checkToken, controller.myCourse)
-router.put('/:id', controller.updateCourseById)
+router.put('/:id', multer.single('image'), controller.updateCourseById)
 router.delete('/:id', controller.deleteCourseById)
 module.exports = router

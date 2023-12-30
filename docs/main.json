@@ -419,10 +419,22 @@
           }
         }
       },
-      "post": {
+      "put": {
         "tags": ["User"],
         "operationId": "",
         "summary": "Change user username, email, role",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1006,19 +1018,6 @@
         "tags": ["Course"],
         "operationId": "create course",
         "summary": "create new course",
-        "parameters": [
-          {
-              "name": "image",
-              "in": "formData",
-              "description": "Image file to upload",
-              "required": true,
-              "schema": {
-                  "type": "string",
-                  "format": "binary",
-                  "contentMediaType": "image/*"
-              }
-          }
-      ],
         "requestBody": {
           "content": {
             "application/json": {
