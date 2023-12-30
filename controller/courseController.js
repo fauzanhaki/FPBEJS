@@ -1,7 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const checkRating = require('../utils/check.rating')
-const { imageKit } = require('../utils/image.kit')
+const { imageKit } = require('../utils/image.kit');
+const { Transaction, User, DetailTransaction, Category, PaymentMethod, Course, Review, Progress } = require('../models');
+const checkProgress = require('../utils/check.progres');
 module.exports = {
   createCourse: async (req, res, next) => {
     try {
@@ -303,6 +305,7 @@ module.exports = {
     }
   },
 
+
   deleteCourseById: async (req, res, next) => {
     try {
 
@@ -324,6 +327,103 @@ module.exports = {
     } catch (error) {
       next(error)
     }
-  }
+  },
+
+  myCourse: async (req, res) => {
+    try {
+      const userIdFromToken = res.user.id;
+
+      const transactions = await Transaction.findMany({
+        where: {
+          userId: userIdFromToken,
+        }
+      })
+
+      if (!transactions || transactions.length === 0) {
+        return res.status(404).json({ message: "No transactions found" });
+      }
+
+      const data = await Promise.all(
+        transactions.map(async (transaction) => {
+
+          const detailTransaction = await DetailTransaction.findUnique({
+            where: { id: parseInt(transaction.id) },
+          });
+
+          const course = await Course.findUnique({
+            where: { id: detailTransaction.courseId },
+            select: {
+              id: true,
+              name: true,
+              courseCode: true,
+              isPremium: true,
+              categoryId: true,
+              level: true,
+              price: true,
+              picture: true,
+              description: true,
+              videoUrl: true,
+              userId: true,
+              createdAt: true,
+              updatedAt: true,
+              about: true,
+              duration: true,
+              review: {
+                select: {
+                  rating: true
+                }
+              },
+              module: {
+                select: {
+                  name: true,
+                  url: true
+                }
+              }
+            },
+          });
+
+          const rating = checkRating(course);
+
+          const category = await Category.findUnique({
+            where: { id: course.categoryId },
+          });
+
+          const progressUser = await Progress.findMany({
+            where: { userId: userIdFromToken }
+          })
+
+          const progress = checkProgress(progressUser, course.module)
+          
+          return {
+            id: course.id,
+            name: course.name,
+            courseCode: course.courseCode,
+            isPremium: course.isPremium,
+            category: category.name,
+            level: course.level,
+            price: course.price,
+            picture: course.picture,
+            description: course.description,
+            videoUrl: course.videoUrl,
+            mentor: course.name,
+            rating: rating,
+            about: course.about,
+            duration: course.duration,
+            progress: progress,
+            createdAt: course.createdAt,
+            updatedAt: course.updatedAt,
+          };
+        })
+      );
+
+      return res.status(200).json({
+        message: "My Course retrieved successfully",
+        data,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  },
 
 }

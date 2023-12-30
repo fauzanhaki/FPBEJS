@@ -12,4 +12,5 @@ module.exports = {
   PaymentMethod: prisma.paymentMethod,
   Transaction: prisma.transaction,
   DetailTransaction: prisma.detailTransaction,
+  Progress: prisma.progress
 };

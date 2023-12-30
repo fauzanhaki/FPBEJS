@@ -8,7 +8,8 @@ const express = require('express'),
     reviewRouter = require('./review'),
     transactionRouter = require('./transaction'),
     paymentMethod = require('./payment.method'),
-    moduleRouter = require('./module.router')
+    moduleRouter = require('./module.router'),
+    progres = require('./progress.router');
     
     
 
@@ -21,5 +22,6 @@ router.use('/review', reviewRouter);
 router.use('/transaction', transactionRouter);
 router.use('/payment-method', paymentMethod);
 router.use('/module', moduleRouter);
+router.use('/progress', progres);
 
 module.exports = router

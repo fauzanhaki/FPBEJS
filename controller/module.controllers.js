@@ -19,8 +19,6 @@ module.exports = {
                 }
             })
 
-            if (data || data.length == 0) return res.status(403).json({ message: "Create failed" })
-
             return res.status(200).json({ message: "success", data })
         } catch (error) {
             next(error)

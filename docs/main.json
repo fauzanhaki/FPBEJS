@@ -35,12 +35,20 @@
       "description": "Find all about course router here"
     },
     {
+      "name": "Module",
+      "description": "Find all about module router here"
+    },
+    {
       "name": "Payment",
       "description": "Find all about payment method router here"
     },
     {
       "name": "Transaction",
       "description": "Find all about transaction router here"
+    },
+    {
+      "name": "Progress",
+      "description": "Find all about progress router here"
     },
     {
       "name": "Review",
@@ -998,6 +1006,19 @@
         "tags": ["Course"],
         "operationId": "create course",
         "summary": "create new course",
+        "parameters": [
+          {
+              "name": "image",
+              "in": "formData",
+              "description": "Image file to upload",
+              "required": true,
+              "schema": {
+                  "type": "string",
+                  "format": "binary",
+                  "contentMediaType": "image/*"
+              }
+          }
+      ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1011,6 +1032,7 @@
                   "level": {"type": "string"},
                   "price": {"type": "integer"},
                   "description": {"type": "string"},
+                  "duration": {"type": "string"},
                   "videoUrl": {"type": "string"},
                   "userId": {"type":"string"}
                 }
@@ -1080,6 +1102,48 @@
                         "rating": {"type":"string"},
                         "duration": {"type":"string"},
                         "about": {"type":"string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/course/my-course": {
+      "get": {
+        "tags": ["Course"],
+        "operationId": "get my course",
+        "summary": "get my course course by id",
+        "description": "Don't forget to include the token in the Authorization Bearer.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "courseCode": {"type": "string"},
+                        "isPremium": {"type": "boolean"},
+                        "categoryId": {"type": "string"},
+                        "level": {"type": "string"},
+                        "price": {"type": "integer"},
+                        "description": {"type": "string"},
+                        "videoUrl": {"type": "string"},
+                        "mentor": {"type":"string"},
+                        "rating": {"type":"string"},
+                        "about": {"type":"string"},
+                        "duration": {"type":"string"},
+                        "progress": {"type": "string"},
                         "createdAt": {"type":"string"},
                         "updatedAt": {"type": "string"}
                       }
@@ -1336,6 +1400,220 @@
         }
       }
     },
+    
+
+    "/module/": {
+      "post": {
+        "tags": ["Module"],
+        "operationId": "create module",
+        "summary": "create module for course",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courseId": {"type": "number"},
+                  "name": {"type": "string"},
+                  "url": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "url": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Module"],
+        "operationId": "get module",
+        "summary": "Get all module course",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "url": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/module/{id}": {
+      "get": {
+        "tags": ["Module"],
+        "operationId": "get module by id",
+        "summary": "Get module course by id",
+        "parameters": [
+          {
+              "name": "moduleId",
+              "in": "path",
+              "description": "ID of module to return",
+              "required": true,
+              "schema": {
+                  "type": "integer",
+                  "format": "int64"
+              }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "url": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Module"],
+        "operationId": "update module by id",
+        "summary": "Update module course by id",
+        "parameters": [
+          {
+              "name": "moduleId",
+              "in": "path",
+              "description": "ID of module to return",
+              "required": true,
+              "schema": {
+                  "type": "integer",
+                  "format": "int64"
+              }
+          }
+      ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "courseId": {"type": "number"},
+                  "name": {"type": "string"},
+                  "url": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "url": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Module"],
+        "operationId": "delete module by id",
+        "summary": "Delete module course by id",
+        "parameters": [
+          {
+              "name": "moduleId",
+              "in": "path",
+              "description": "ID of module to return",
+              "required": true,
+              "schema": {
+                  "type": "integer",
+                  "format": "int64"
+              }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {"type": "string"},
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "name": {"type": "string"},
+                        "url": {"type": "string"},
+                        "createdAt": {"type":"string"},
+                        "updatedAt": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    
 
     "/payment-method": {
       "post": {
@@ -1654,6 +1932,51 @@
                       "type": "object",
                       "properties": {
                         "message": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/progress/send-progress": {
+      "post": {
+        "tags": ["Progress"],
+        "operationId": "Send Progress User",
+        "summary": "Send progress user",
+        "description": "The user ID is obtained through token conversion. So, don't forget to include the token in the Authorization Bearer.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {"type": "number"},
+                  "moduleId": {"type": "number"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {"type": "number"},
+                        "userId": {"type": "number"},
+                        "moduleId": {"type": "number"},
+                        "createdAt": {"type": "string"},
+                        "updatedAt": {"type": "string"}
                       }
                     }
                   }
