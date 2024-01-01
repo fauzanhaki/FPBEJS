@@ -266,7 +266,6 @@ module.exports = {
 
       const courseId = req.params.id;
       const userId = req.body.userId;
-      console.log(userId);
 
       let data = await prisma.course.findUnique({
         where: { id: Number(courseId) }
@@ -280,8 +279,8 @@ module.exports = {
 
       if (!user) {
         return res.status(404).json({ message: "User not found" })
-      } else if(user.role != 'mentor') {
-        return res.status(403).json({message: "User must be mentor"})
+      } else if (user.role != 'mentor') {
+        return res.status(403).json({ message: "User must be mentor" })
       }
 
       const fileTostring = req.file.buffer.toString('base64');
@@ -291,21 +290,40 @@ module.exports = {
         file: fileTostring
       });
 
-      data = await prisma.course.update({
-        where: { id: Number(courseId) },
-        data: {
-          name: req.body.name,
-          courseCode: req.body.courseCode,
-          isPremium: Boolean(req.body.isPremium),
-          categoryId: Number(req.body.categoryId),
-          level: req.body.level.toLowerCase().trim(),
-          price: Number(req.body.price),
-          picture: uploadFile.url,
-          description: req.body.description,
-          videoUrl: req.body.videoUrl,
-          userId: Number(req.body.userId)
-        }
-      })
+      if (uploadFile.url) {
+        data = await prisma.course.update({
+          where: { id: Number(courseId) },
+          data: {
+            name: req.body.name,
+            courseCode: req.body.courseCode,
+            isPremium: Boolean(req.body.isPremium),
+            categoryId: Number(req.body.categoryId),
+            level: req.body.level.toLowerCase().trim(),
+            price: Number(req.body.price),
+            picture: uploadFile.url,
+            about: req.body.about,
+            description: req.body.description,
+            videoUrl: req.body.videoUrl,
+            userId: Number(req.body.userId)
+          }
+        })
+      } else {
+        data = await prisma.course.update({
+          where: { id: Number(courseId) },
+          data: {
+            name: req.body.name,
+            courseCode: req.body.courseCode,
+            isPremium: Boolean(req.body.isPremium),
+            categoryId: Number(req.body.categoryId),
+            level: req.body.level.toLowerCase().trim(),
+            price: Number(req.body.price),
+            about: req.body.about,
+            description: req.body.description,
+            videoUrl: req.body.videoUrl,
+            userId: Number(req.body.userId)
+          }
+        })
+      }
       return res.status(200).json({ message: 'Update success', data })
     } catch (error) {
       console.log(error);
@@ -414,7 +432,7 @@ module.exports = {
             picture: course.picture,
             description: course.description,
             videoUrl: course.videoUrl,
-            mentor: course.name,
+            mentor: course,
             rating: rating,
             about: course.about,
             duration: course.duration,
