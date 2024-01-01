@@ -412,6 +412,17 @@ module.exports = {
 
           const rating = checkRating(course);
 
+          const mentor = await User.findUnique({
+            where: {id: userIdFromToken},
+            select: {
+              profile: {
+                select: {
+                  name: true
+                }
+              }
+            }
+          })
+
           const category = await Category.findUnique({
             where: { id: course.categoryId },
           });
@@ -433,7 +444,7 @@ module.exports = {
             picture: course.picture,
             description: course.description,
             videoUrl: course.videoUrl,
-            mentor: course,
+            mentor: mentor.profile.name,
             rating: rating,
             about: course.about,
             duration: course.duration,
