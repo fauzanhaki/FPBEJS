@@ -267,11 +267,11 @@ module.exports = {
       const courseId = req.params.id;
       const userId = req.body.userId;
 
-      let data = await prisma.course.findUnique({
+      const existCourse = await prisma.course.findUnique({
         where: { id: Number(courseId) }
       })
 
-      if (!data) return res.status(404).json({ message: 'Course not found' })
+      if (!existCourse) return res.status(404).json({ message: 'Course not found' })
 
       const user = await prisma.user.findUnique({
         where: { id: parseInt(userId) }
@@ -283,7 +283,7 @@ module.exports = {
         return res.status(403).json({ message: "User must be mentor" })
       }
 
-      if (req.file.buffer) {
+      if (req.file && req.file.buffer) {
         const fileTostring = req.file.buffer.toString('base64');
 
         const uploadFile = await imageKit.upload({
@@ -291,42 +291,41 @@ module.exports = {
           file: fileTostring
         });
 
-        if (uploadFile.url) {
-          data = await prisma.course.update({
-            where: { id: Number(courseId) },
-            data: {
-              name: req.body.name,
-              courseCode: req.body.courseCode,
-              isPremium: Boolean(req.body.isPremium),
-              categoryId: Number(req.body.categoryId),
-              level: req.body.level.toLowerCase().trim(),
-              price: Number(req.body.price),
-              picture: uploadFile.url,
-              about: req.body.about,
-              description: req.body.description,
-              videoUrl: req.body.videoUrl,
-              userId: Number(req.body.userId)
-            }
-          })
-        } else {
-          data = await prisma.course.update({
-            where: { id: Number(courseId) },
-            data: {
-              name: req.body.name,
-              courseCode: req.body.courseCode,
-              isPremium: Boolean(req.body.isPremium),
-              categoryId: Number(req.body.categoryId),
-              level: req.body.level.toLowerCase().trim(),
-              price: Number(req.body.price),
-              about: req.body.about,
-              description: req.body.description,
-              videoUrl: req.body.videoUrl,
-              userId: Number(req.body.userId)
-            }
-          })
-        }
+        const data = await prisma.course.update({
+          where: { id: Number(courseId) },
+          data: {
+            name: req.body.name,
+            courseCode: req.body.courseCode,
+            isPremium: Boolean(req.body.isPremium),
+            categoryId: Number(req.body.categoryId),
+            level: req.body.level.toLowerCase().trim(),
+            price: Number(req.body.price),
+            picture: uploadFile.url,
+            about: req.body.about,
+            description: req.body.description,
+            videoUrl: req.body.videoUrl,
+            userId: Number(req.body.userId)
+          }
+        })
+        return res.status(200).json({ message: 'Update success', data })
+      } else {
+        const data = await prisma.course.update({
+          where: { id: Number(courseId) },
+          data: {
+            name: req.body.name,
+            courseCode: req.body.courseCode,
+            isPremium: Boolean(req.body.isPremium),
+            categoryId: Number(req.body.categoryId),
+            level: req.body.level.toLowerCase().trim(),
+            price: Number(req.body.price),
+            about: req.body.about,
+            description: req.body.description,
+            videoUrl: req.body.videoUrl,
+            userId: Number(req.body.userId)
+          }
+        })
+        return res.status(200).json({ message: 'Update success', data })
       }
-      return res.status(200).json({ message: 'Update success', data })
     } catch (error) {
       console.log(error);
       next(error)
