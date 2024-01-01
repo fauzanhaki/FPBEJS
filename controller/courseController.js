@@ -154,6 +154,7 @@ module.exports = {
           },
           module: {
             select: {
+              id: true,
               name: true,
               url: true
             }
@@ -382,6 +383,7 @@ module.exports = {
               },
               module: {
                 select: {
+                  id: true,
                   name: true,
                   url: true
                 }
@@ -416,6 +418,7 @@ module.exports = {
             rating: rating,
             about: course.about,
             duration: course.duration,
+            module: course.module,
             progress: progress,
             createdAt: course.createdAt,
             updatedAt: course.updatedAt,
