@@ -1033,7 +1033,7 @@
                   "description": {"type": "string"},
                   "duration": {"type": "string"},
                   "videoUrl": {"type": "string"},
-                  "userId": {"type":"string"}
+                  "userId": {"type":"number"}
                 }
               }
             }
@@ -1312,7 +1312,7 @@
                   "price": {"type": "integer"},
                   "description": {"type": "string"},
                   "videoUrl": {"type": "string"},
-                  "userId": {"type":"string"}
+                  "userId": {"type":"number"}
                 }
               }
             }
